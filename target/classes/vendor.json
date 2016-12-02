@@ -1,0 +1,65 @@
+{
+  "firstName": {},
+  "lastName": {},
+  "username": {},
+  "password": {},
+  "profilePhoto": {},
+  "Budget": {},
+  "Albums": {
+    "name": [
+      {
+        "name": {},
+        "Event": {},
+        "date": {},
+        "img1": {},
+        "img2": {},
+        "img3": {}
+      },
+      {
+        "name": {},
+        "Event": {},
+        "date": {},
+        "img1": {},
+        "img2": {},
+        "img3": {}
+      }
+    ]
+  },
+  "phoneNumber": {},
+  "address": {
+    "street": "100 East Main Street",
+    "city": "Southernville",
+    "state": "NY",
+    "zip": "19910"
+  },
+  "ConfirmedEvents": {
+    "Event": [
+      {
+        "address": "",
+        "date": "12/12/12/",
+        "price": {}
+      },
+      {
+        "address": "",
+        "date": "",
+        "price": {}
+      }
+    ]
+  },
+  "Calendar": {},
+  "rating": {},
+  "Requests": {
+    "request": [
+      {
+        "address": {},
+        "date": {},
+        "user": {}
+      },
+      {
+        "address": {},
+        "date": {},
+        "user": {}
+      }
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "firstName": {},
+  "lastName": {},
+  "username": {},
+  "password": {},
+  "profilePhoto": {},
+  "phoneNumber": {},
+  "address": {
+    "street": "100 East Main Street",
+    "city": "Southernville",
+    "state": "NY",
+    "zip": "19910"
+  },
+  "Planwedding": [
+    {
+      "date": {},
+      "address": {},
+      "budget": {},
+      "preferenceOrder": "florist,photographer,caterer"
+    }
+  ],
+  "ConfirmedEvent": {
+    "vendor": [
+      {
+        "catergory": "photographer",
+        "date": "12/12/12/",
+        "artist": {},
+        "price": {}
+      },
+      {
+        "catergory": "florist",
+        "date": "",
+        "artist": {},
+        "price": {}
+      },
+      {
+        "category": "MakeUpArtist",
+        "date": "",
+        "artist": {},
+        "price": {}
+      }
+    ],
+    "venue": {
+      "street": "100 East Main Street",
+      "city": "Southernville",
+      "state": "NY",
+      "zip": "19910"
+    }
+  }
+}
