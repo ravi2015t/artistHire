@@ -3,18 +3,10 @@ package com.daemonservices;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.settings.Settings.Builder;
-
 import com.models.Tweet;
-import com.tasks.FetchTweetsTask;
 
 import io.searchbox.client.JestClient;
-import io.searchbox.client.JestClientFactory;
-import io.searchbox.client.config.HttpClientConfig;
 import io.searchbox.core.Index;
-import io.searchbox.indices.CreateIndex;
-import io.searchbox.indices.mapping.PutMapping;
 
 
 public class ElasticSearchHose {

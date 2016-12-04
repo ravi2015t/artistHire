@@ -3,28 +3,7 @@
   "lastName": {},
   "username": {},
   "password": {},
-  "profilePhoto": {},
   "Budget": {},
-  "Albums": {
-    "name": [
-      {
-        "name": {},
-        "Event": {},
-        "date": {},
-        "img1": {},
-        "img2": {},
-        "img3": {}
-      },
-      {
-        "name": {},
-        "Event": {},
-        "date": {},
-        "img1": {},
-        "img2": {},
-        "img3": {}
-      }
-    ]
-  },
   "phoneNumber": {},
   "address": {
     "street": "100 East Main Street",
