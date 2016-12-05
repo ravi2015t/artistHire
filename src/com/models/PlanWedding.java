@@ -81,7 +81,7 @@ public class PlanWedding {
 	* The preferenceOrder
 	*/
 	@JsonProperty("preferenceOrder")
-	public Object getPreferenceOrder() {
+	public String getPreferenceOrder() {
 	return preferenceOrder;
 	}
 

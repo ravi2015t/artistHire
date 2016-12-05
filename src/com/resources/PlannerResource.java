@@ -15,6 +15,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.daemonservices.ElasticSearchHose;
 import com.daemonservices.WeddingPlannerExecutor;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -23,8 +28,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.models.ConfirmedEvent;
+import com.models.PlanWedding;
 import com.models.SNSmodel;
 import com.models.Tweet;
+import com.models.User;
 import com.tasks.FetchTweetsTask.Location;
 
 import io.searchbox.client.JestClient;
@@ -34,6 +42,24 @@ import io.searchbox.core.SearchResult;
 @Path("/planner")
 
 public class PlannerResource {
+	static String userTable = "User";
+	static String planWedding= "planWeddding";
+	static String confirmedEvents = "confirmEvents"; 
+	   
+	static AmazonDynamoDBClient client = new AmazonDynamoDBClient();
+
+	  
+	  //  static DynamoDB dynamoDB = new DynamoDB(new AmazonDynamoDBClient(
+	    //        new ProfileCredentialsProvider()));
+		static DynamoDB dynamoDB = new DynamoDB(getclient(client));
+	    public static AmazonDynamoDBClient getclient(AmazonDynamoDBClient client)
+	    {
+	    	 client.withEndpoint("http://localhost:8000"); 
+	         return client;
+	    }
+
+
+
 	private static String indexName = WeddingPlannerExecutor.getPropertiesFile("AwsCredentials.properties")
 			.getProperty("index-name");
 	private static String mappingName = WeddingPlannerExecutor.getPropertiesFile("AwsCredentials.properties")
@@ -106,6 +132,41 @@ public class PlannerResource {
 	@Path("/user/signup")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response signupUser(String msg){
+		ObjectMapper mapper = new ObjectMapper();
+		Table table = dynamoDB.getTable(userTable);
+		
+        try {
+			User user = mapper.readValue(msg, User.class);
+			 Item item = new Item()
+		                .withPrimaryKey("username", user.getUsername())
+		                .withString("firstName", user.getFirstname())
+		                .withString("lastName", user.getLastname())
+		                .withMap( "Address", 
+		                    new ValueMap()
+		                    .withString("street", user.getAddress().getSrteet())
+		                    .withString("city", user.getAddress().getCity())
+		                    .withString("state", user.getAddress().getState())
+		                    .withNumber ("zip", user.getAddress().getZip()))
+		                .withString("phoneNumber", user.getPhoneNumber());
+		                 table.putItem(item);
+  
+			
+        }
+        catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+		return   Response.status(200).build();
+    
+	
+	}
 		/*ObjectMapper mapper = new ObjectMapper();
         try {
 			SNSmodel snsmod = mapper.readValue(msg, SNSmodel.class);
@@ -155,8 +216,6 @@ public class PlannerResource {
 		
 		return Response.status(200).build();
 */			
-		return null;
-      }
 	
 	@GET
 	@Path("/user/getProfile/{username}")
@@ -178,10 +237,27 @@ public class PlannerResource {
 	@GET
 	@Path("/user/MyWedding/{username}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Location> getMyWedding(
+	public String getMyWedding(
 			@PathParam("username") String userName)
 			{
-				return null;
+	    Table table = dynamoDB.getTable(confirmedEvents);
+        String response = "";
+        try {
+        	//Should be Implementing as a LIST
+
+            Item item = table.getItem("username", userName,  "date, price, Vendor, Address", null);
+
+            System.out.println("Printing item after retrieving it....");
+            System.out.println(item.toJSONPretty());
+            response = item.toJSON();
+            
+        } catch (Exception e) {
+            System.err.println("GetItem failed.");
+            System.err.println(e.getMessage());
+        }   
+        
+        return response;
+				
 			}
 	
 	
@@ -213,17 +289,87 @@ public class PlannerResource {
 	@Path("/user/registerWedding")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response registerWedding(String msg){
+		ObjectMapper mapper = new ObjectMapper();
+		Table table = dynamoDB.getTable(planWedding);
 		
-			return null;
+        try {
+			PlanWedding plan = mapper.readValue(msg, PlanWedding.class);
+			   Item item = new Item()
+                       .withPrimaryKey("username", "")
+                       .withString("date", plan.getDate().toString())
+                       .withNumber("budget", plan.getBudget())
+                       .withMap( "Address", 
+                           new ValueMap()
+                           .withString("street", plan.getAddress().getSrteet())
+		                    .withString("city", plan.getAddress().getCity())
+		                    .withString("state", plan.getAddress().getState())
+		                    .withNumber ("zip", plan.getAddress().getZip()))
+		                .withString("preferenceOrder", plan.getPreferenceOrder());
+			   table.putItem(item);
+			            
+             
+			
+        }
+        catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+		return   Response.status(200).build();
+    
+	
+	
+		
 		}
 	
 	@POST
 	@Path("/user/bookEvent")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response bookEvent(String msg){
+		ObjectMapper mapper = new ObjectMapper();
+		Table table = dynamoDB.getTable(planWedding);
 		
-			return null;
-		}
-	
+        try {
+			ConfirmedEvent ce = mapper.readValue(msg, ConfirmedEvent.class);
+		
+		    Item item = new Item()
+                    .withPrimaryKey("username", "rambit")
+                    .withString("date", ce.getDate().toString())
+                    .withNumber("price", ce.getPrice())
+                    .withMap( "Address", 
+                        new ValueMap()
+                        .withString("street", ce.getVenue().getSrteet())
+                        .withString("city", ce.getVenue().getCity())
+                        .withString("state", ce.getVenue().getState())
+                        .withNumber("zip", ce.getVenue().getZip()))
+                    .withString("Vendor", ce.getArtist())
+                    .withString("Name", "");
+                    
+		
+        table.putItem(item);
+        
+        
+		
+    }
+    catch (JsonParseException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (JsonMappingException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+    
+	return   Response.status(200).build();
+
+	}
 	
 	}

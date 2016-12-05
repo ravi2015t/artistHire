@@ -8,14 +8,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class User {
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	
+	@JsonProperty("username")
+	private String username;
+	
 	@JsonProperty("firstname")
 	private String firstname;
 	@JsonProperty("lastname")
-	private Integer lastname;
+	private String lastname;
 	@JsonProperty("address")
 	private Address address;
 	@JsonProperty("phoneNumber")
-	private Long phoneNumber;
+	private String phoneNumber;
 		/**
 	* 
 	* @return
@@ -39,10 +42,29 @@ public class User {
 	/**
 	* 
 	* @return
+	* The firstname
+	*/
+	@JsonProperty("username")
+	public String getUsername() {
+	return username;
+	}
+
+	/**
+	* 
+	* @param firstname
+	* The firstname
+	*/
+	@JsonProperty("username")
+	public void setUsername(String username) {
+	this.username = username;
+	}
+	/**
+	* 
+	* @return
 	* The lastname
 	*/
 	@JsonProperty("lastname")
-	public Integer getLastname() {
+	public String getLastname() {
 	return lastname;
 	}
 
@@ -52,7 +74,7 @@ public class User {
 	* The lastname
 	*/
 	@JsonProperty("lastname")
-	public void setLastname(Integer lastname) {
+	public void setLastname(String lastname) {
 	this.lastname = lastname;
 	}
 
@@ -82,7 +104,7 @@ public class User {
 	* The phoneNumber
 	*/
 	@JsonProperty("phoneNumber")
-	public Long getPhoneNumber() {
+	public String getPhoneNumber() {
 	return phoneNumber;
 	}
 
@@ -92,7 +114,7 @@ public class User {
 	* The phoneNumber
 	*/
 	@JsonProperty("phoneNumber")
-	public void setPhoneNumber(Long phoneNumber) {
+	public void setPhoneNumber(String phoneNumber) {
 	this.phoneNumber = phoneNumber;
 	}
 
