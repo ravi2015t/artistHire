@@ -16,10 +16,6 @@ public class User {
 	private Address address;
 	@JsonProperty("phoneNumber")
 	private Long phoneNumber;
-	@JsonProperty("planWedding")
-	private PlanWedding planWedding;
-	@JsonProperty("confirmedEvent")
-	private ConfirmedEvent confirmedEvent;
 		/**
 	* 
 	* @return
@@ -106,41 +102,8 @@ public class User {
 	 * @return
 	* The planWedding
 	*/
-	@JsonProperty("planWedding")
-	public PlanWedding getPlanWedding() {
-	return planWedding;
-	}
-
-	/**
-	* 
-	* @param planWedding
-	* The planWedding
-	*/
-	@JsonProperty("planWedding")
-	public void setPlanWedding(PlanWedding planWedding) {
-	this.planWedding = planWedding;
-	}
-
-	/**
-	* 
-	* @return
-	* The confirmedEvent
-	*/
-	@JsonProperty("confirmedEvent")
-	public ConfirmedEvent getConfirmedEvent() {
-	return confirmedEvent;
-	}
-
-	/**
-	* 
-	* @param confirmedEvent
-	* The confirmedEvent
-	*/
-	@JsonProperty("confirmedEvent")
-	public void setConfirmedEvent(ConfirmedEvent confirmedEvent) {
-	this.confirmedEvent = confirmedEvent;
-	}
-
+	
+	
 
 	}
 

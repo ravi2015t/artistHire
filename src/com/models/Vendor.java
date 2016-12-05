@@ -1,7 +1,6 @@
 package com.models;
 
 import java.util.Calendar;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -25,18 +24,12 @@ public class Vendor {
 	private Long phoneNumber;
 	@JsonProperty("address")
 	private Address address;
-	@JsonProperty("confirmEvent")
-	private List<Event> confirmEvent;
 	@JsonProperty("Calendar")
 	private Calendar calendar;
 	@JsonProperty("rating")
 	private int rating;
 	@JsonProperty("Nusers")
 	private int nusers;
-	
-	@JsonProperty("requests")
-	private List<Request> requests;
-
 	@JsonProperty("firstname")
 	public String getFirstname() {
 	return firstname;
@@ -173,32 +166,7 @@ public class Vendor {
 	this.address = address;
 	}
 
-	/**
-	* 
-	* @return
-	* The confirmEvent
-	*/
-	@JsonProperty("Event")
-	public List<Event> getEvent() {
-	return confirmEvent;
-	}
-
-	/**
-	* 
-	* @param confirmEvent
-	* The confirmEvent
-	*/
-	@JsonProperty("Event")
-	public void setEvent(List<Event> confirmEvent) {
-	this.confirmEvent = confirmEvent;
-	}
-
-	/**
-	* 
-	* @return
-	* The calendar
-	*/
-	@JsonProperty("Calendar")
+		@JsonProperty("Calendar")
 	public Object getCalendar() {
 	return calendar;
 	}
@@ -231,26 +199,6 @@ public class Vendor {
 	@JsonProperty("rating")
 	public void setRating(int rating) {
 	this.rating = rating;
-	}
-
-	/**
-	* 
-	* @return
-	* The requests
-	*/
-	@JsonProperty("requests")
-	public List<Request> getRequests() {
-	return requests;
-	}
-
-	/**
-	* 
-	* @param requests
-	* The requests
-	*/
-	@JsonProperty("requests")
-	public void setRequests(List<Request> requests) {
-	this.requests = requests;
 	}
 
 	

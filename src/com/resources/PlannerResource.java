@@ -1,6 +1,10 @@
 package com.resources;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -13,7 +17,19 @@ import javax.ws.rs.core.Response;
 
 import com.daemonservices.ElasticSearchHose;
 import com.daemonservices.WeddingPlannerExecutor;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.models.SNSmodel;
+import com.models.Tweet;
 import com.tasks.FetchTweetsTask.Location;
+
+import io.searchbox.client.JestClient;
+import io.searchbox.core.Search;
+import io.searchbox.core.SearchResult;
 
 @Path("/planner")
 
