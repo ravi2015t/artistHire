@@ -14,8 +14,9 @@ public class Request {
 	private Address address;
 	@JsonProperty("user")
 	private String user;
-	@JsonProperty("message")
-	private String message;
+	@JsonProperty("vendor")
+	private String vendor;
+	
 	@JsonProperty("date")
 	private Date date;
 	
@@ -64,9 +65,9 @@ public class Request {
 	* @return
 	* The message
 	*/
-	@JsonProperty("message")
-	public String getMessage() {
-	return message;
+	@JsonProperty("vendor")
+	public String getVendor() {
+	return this.vendor;
 	}
 
 	/**
@@ -74,9 +75,9 @@ public class Request {
 	* @param message
 	* The message
 	*/
-	@JsonProperty("message")
-	public void setMessage(String message) {
-	this.message = message;
+	@JsonProperty("vendor")
+	public void setVendor(String vendor) {
+	this.vendor = vendor;
 	}
 
 	/**

@@ -13,6 +13,9 @@ public class ConfirmedEvent {
 	@JsonProperty("venue")
 	private Address venue;
 	
+	@JsonProperty("username")
+	private String username;
+	
 	@JsonProperty("category")
 	private String category;
 	@JsonProperty("date")

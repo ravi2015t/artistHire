@@ -3,11 +3,13 @@
       {
         "address": {},
         "date": {},
-        "user": {}
+        "user": "username",
+        "vendor": "vendorusername"
       },
       {
         "address": {},
         "date": {},
-        "user": {}
+        "user": {},
+        "vendor": "vendorusername"
       }
     ]}

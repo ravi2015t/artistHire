@@ -78,22 +78,12 @@
     	<artifactId>scribe</artifactId>
     	<version>1.3.7</version>
     </dependency>
-    <!-- <dependency>
-    	<groupId>com.amazonaws</groupId>
-    	<artifactId>amazon-sqs-java-extended-client-lib</artifactId>
-    	<version>1.0.0</version>
-    </dependency> -->
     <dependency>
     <groupId>com.amazonaws</groupId>
     <artifactId>aws-java-sdk</artifactId>
     <version>1.11.22</version>
   </dependency>
-   <!--  <dependency>
-    	<groupId>com.amazonaws</groupId>
-    	<artifactId>aws-java-sdk-sns</artifactId>
-    	<version>1.11.54-SNAPSHOT</version>
-    </dependency>
-    --> <dependency>
+    <dependency>
     	<groupId>org.glassfish.jersey.media</groupId>
     	<artifactId>jersey-media-json-jackson</artifactId>
     	<version>2.22.1</version>
@@ -140,6 +130,11 @@
   <artifactId>jetty-maven-plugin</artifactId>
   <version>9.0.0.v20130308</version> 
   </dependency>
+  <dependency>
+			<groupId>com.sun.jersey.contribs</groupId>
+			<artifactId>jersey-multipart</artifactId>
+			<version>1.8</version>
+		</dependency>
   
   </dependencies>
 </project>
