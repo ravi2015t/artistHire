@@ -295,6 +295,15 @@ public class PlannerResource {
 			}
 	
 	@GET
+	@Path("/user/searchVendors/{query}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Location> getSearchResults(
+			@PathParam("username") String userName)
+			{
+				return null;
+			}
+	
+	@GET
 	@Path("/user/MyWedding/{username}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getMyWedding(
