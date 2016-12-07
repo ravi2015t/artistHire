@@ -11,6 +11,9 @@ public class User {
 	@JsonProperty("username")
 	private String username;
 	
+	@JsonProperty("password")
+	private String password;
+	
 	@JsonProperty("firstname")
 	private String firstname;
 	@JsonProperty("lastname")
@@ -37,6 +40,21 @@ public class User {
 	@JsonProperty("firstname")
 	public void setFirstname(String firstname) {
 	this.firstname = firstname;
+	}
+
+	@JsonProperty("password")
+	public String getPassword() {
+	return password;
+	}
+
+	/**
+	* 
+	* @param firstname
+	* The firstname
+	*/
+	@JsonProperty("password")
+	public void setPassword(String password) {
+	this.password = password;
 	}
 
 	/**

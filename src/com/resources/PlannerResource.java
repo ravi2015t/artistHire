@@ -48,6 +48,7 @@ import com.models.SNSmodel;
 import com.models.SearchResults;
 import com.models.Tweet;
 import com.models.User;
+import com.models.Vendor;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 import com.tasks.FetchTweetsTask.Location;
@@ -61,10 +62,13 @@ import io.searchbox.core.SearchResult;
 
 public class PlannerResource {
 	static String userTable = "User";
+	static String vendor = "Vendor";
+	
 	static String planWedding= "planWeddding";
 	static String confirmedEvents = "confirmEvents"; 
 	static String tobeApprovedEventsUser = "approveEventsUser"; 
 	static String tobeApprovedEventsVendor = "approveEventsVendor";    
+	
 	private static final Properties awsCredentialsFile = WeddingPlannerExecutor.
 			getPropertiesFile("AwsCredentials.properties");
 	static  BasicAWSCredentials awsCreds = new BasicAWSCredentials(awsCredentialsFile.getProperty("accessKey"), awsCredentialsFile.getProperty("secretKey"));
@@ -334,8 +338,41 @@ public class PlannerResource {
 	@Path("/vendor/photographer/signup")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response signupPhotographer(String msg){
+		ObjectMapper mapper = new ObjectMapper();
+		Table table = dynamoDB.getTable(vendor);
 		
-			return null;
+        try {
+			Vendor ven = mapper.readValue(msg, Vendor.class);
+			 Item item = new Item()
+		                .withPrimaryKey("username", ven.getUsername())
+		                .withString("firstName", ven.getFirstname())
+		                .withString("lastName", ven.getLastname())
+		                .withString("password", ven.getPassword())
+		                .withMap( "Address", 
+		                    new ValueMap()
+		                    .withString("street", ven.getAddress().getSrteet())
+		                    .withString("city", ven.getAddress().getCity())
+		                    .withString("state", ven.getAddress().getState())
+		                    .withNumber ("zip", ven.getAddress().getZip()))
+		                .withString("phoneNumber", ven.getPhoneNumber())
+		                .withString("type", ven.getType());
+		                 table.putItem(item);
+  
+			
+        }
+        catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+    	return   Response.status(200).build();
+        
 		}
     
 	@POST

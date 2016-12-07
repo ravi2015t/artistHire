@@ -21,7 +21,7 @@ public class Vendor {
 	@JsonProperty("Price")
 	private Long price;
 	@JsonProperty("phoneNumber")
-	private Long phoneNumber;
+	private String phoneNumber;
 	@JsonProperty("address")
 	private Address address;
 	@JsonProperty("Calendar")
@@ -30,9 +30,27 @@ public class Vendor {
 	private int rating;
 	@JsonProperty("Nusers")
 	private int nusers;
+	
+	@JsonProperty("type")
+	private String type;
+	
 	@JsonProperty("firstname")
 	public String getFirstname() {
 	return firstname;
+	}
+
+	/**
+	* 
+	* @param firstname
+	* The firstname
+	*/
+	@JsonProperty("type")
+	public void setType(String type) {
+	this.type = type;
+	}
+	@JsonProperty("type")
+	public String getType() {
+	return type;
 	}
 
 	/**
@@ -132,7 +150,7 @@ public class Vendor {
 	* The phoneNumber
 	*/
 	@JsonProperty("phoneNumber")
-	public Long getPhoneNumber() {
+	public String getPhoneNumber() {
 	return phoneNumber;
 	}
 
@@ -142,7 +160,7 @@ public class Vendor {
 	* The phoneNumber
 	*/
 	@JsonProperty("phoneNumber")
-	public void setPhoneNumber(Long phoneNumber) {
+	public void setPhoneNumber(String phoneNumber) {
 	this.phoneNumber = phoneNumber;
 	}
 

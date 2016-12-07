@@ -1,5 +1,6 @@
 package com.tasks;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
@@ -7,6 +8,9 @@ import java.util.Properties;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClient;
 import com.amazonaws.services.sqs.model.Message;
@@ -54,8 +58,16 @@ public class ReceiveProcessImage implements Runnable{
         	ImageDetails imd = mapper.readValue(message.getBody(), ImageDetails.class);
             if(imd!=null)
             {
-            	//Push it to s3
-            	
+            	AmazonS3 s3client = new AmazonS3Client(awsCreds);
+        		String bucketName = "artist-hire";
+        		
+        		/*
+        		 * I assume folder is either vendor/profile_pictures/vendor_id/picture.png or vendor/albums/vendor_id/image1.png
+        		 * For user - folder value = user/profile_pictures/user_id/picture.png
+        		 */
+        		s3client.putObject(new PutObjectRequest(bucketName, imd.getName(), 
+        				new File("./" + imd.getName())));
+        	
             }
           }
         
