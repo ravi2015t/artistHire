@@ -4,19 +4,19 @@
 		"date": "12/12/12/",
 		"artist": {},
 		"price": {},
-		"address": {}
+		"Address": {}
 	}, {
 		"catergory": "florist",
 		"date": "",
 		"artist": {},
 		"price": {},
-		"address": {}
+		"Address": {}
 	}, {
 		"category": "MakeUpArtist",
 		"date": "",
 		"artist": {},
 		"price": {},
-		"address": {}
+		"Address": {}
 	}]
 
 }

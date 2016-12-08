@@ -10,8 +10,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Request {
 	
 	@JsonInclude(JsonInclude.Include.NON_NULL)
-	@JsonProperty("address")
-	private Address address;
+	@JsonProperty("Address")
+	private Address Address;
 	@JsonProperty("user")
 	private String user;
 	@JsonProperty("vendor")
@@ -25,9 +25,9 @@ public class Request {
 	* @return
 	* The address
 	*/
-	@JsonProperty("address")
+	@JsonProperty("Address")
 	public Address getAddress() {
-	return address;
+	return Address;
 	}
 
 	/**
@@ -35,9 +35,9 @@ public class Request {
 	* @param address
 	* The address
 	*/
-	@JsonProperty("address")
+	@JsonProperty("Address")
 	public void setAddress(Address address) {
-	this.address = address;
+	this.Address = address;
 	}
 
 	/**

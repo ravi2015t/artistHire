@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
-	@JsonInclude(JsonInclude.Include.NON_NULL)
 	
 	@JsonProperty("username")
 	private String username;
@@ -18,8 +17,10 @@ public class User {
 	private String firstname;
 	@JsonProperty("lastname")
 	private String lastname;
-	@JsonProperty("address")
-	private Address address;
+	
+	@JsonProperty("Address")
+	private Address Address;
+	
 	@JsonProperty("phoneNumber")
 	private String phoneNumber;
 		/**
@@ -27,7 +28,6 @@ public class User {
 	* @return
 	* The firstname
 	*/
-	@JsonProperty("firstname")
 	public String getFirstname() {
 	return firstname;
 	}
@@ -37,12 +37,10 @@ public class User {
 	* @param firstname
 	* The firstname
 	*/
-	@JsonProperty("firstname")
 	public void setFirstname(String firstname) {
 	this.firstname = firstname;
 	}
 
-	@JsonProperty("password")
 	public String getPassword() {
 	return password;
 	}
@@ -52,7 +50,6 @@ public class User {
 	* @param firstname
 	* The firstname
 	*/
-	@JsonProperty("password")
 	public void setPassword(String password) {
 	this.password = password;
 	}
@@ -62,7 +59,6 @@ public class User {
 	* @return
 	* The firstname
 	*/
-	@JsonProperty("username")
 	public String getUsername() {
 	return username;
 	}
@@ -72,7 +68,6 @@ public class User {
 	* @param firstname
 	* The firstname
 	*/
-	@JsonProperty("username")
 	public void setUsername(String username) {
 	this.username = username;
 	}
@@ -81,7 +76,6 @@ public class User {
 	* @return
 	* The lastname
 	*/
-	@JsonProperty("lastname")
 	public String getLastname() {
 	return lastname;
 	}
@@ -91,7 +85,6 @@ public class User {
 	* @param lastname
 	* The lastname
 	*/
-	@JsonProperty("lastname")
 	public void setLastname(String lastname) {
 	this.lastname = lastname;
 	}
@@ -101,9 +94,8 @@ public class User {
 	* @return
 	* The address
 	*/
-	@JsonProperty("address")
 	public Address getAddress() {
-	return address;
+	return Address;
 	}
 
 	/**
@@ -111,9 +103,8 @@ public class User {
 	* @param address
 	* The address
 	*/
-	@JsonProperty("address")
 	public void setAddress(Address address) {
-	this.address = address;
+	this.Address = address;
 	}
 
 	/**
@@ -121,7 +112,6 @@ public class User {
 	* @return
 	* The phoneNumber
 	*/
-	@JsonProperty("phoneNumber")
 	public String getPhoneNumber() {
 	return phoneNumber;
 	}

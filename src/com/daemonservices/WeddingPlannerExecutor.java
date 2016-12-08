@@ -141,7 +141,7 @@ public class WeddingPlannerExecutor implements ServletContextListener {
 	
 	
 	public static void main(String[] args) {
-		WeddingPlannerExecutor e = new WeddingPlannerExecutor();
-		e.contextInitialized(null);
+		//WeddingPlannerExecutor e = new WeddingPlannerExecutor();
+		//e.contextInitialized(null);
 	}
 }

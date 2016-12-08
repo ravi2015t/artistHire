@@ -1,10 +1,10 @@
 {
-  "firstName": {},
-  "lastName": {},
-  "username": {},
-  "password": {},
-  "phoneNumber": {},
-  "address": {
+  "firstname": "Ravi",
+  "lastname": "Tej",
+  "username": "tejii",
+  "password": "sdfsd",
+  "phoneNumber": "909809809",
+  "Address": {
     "street": "100 East Main Street",
     "city": "Southernville",
     "state": "NY",

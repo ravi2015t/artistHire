@@ -13,8 +13,8 @@ public class PlanWedding {
 
 	@JsonProperty("date")
 	private Date date;
-	@JsonProperty("address")
-	private Address address;
+	@JsonProperty("Address")
+	private Address Address;
 	@JsonProperty("budget")
 	private Long budget;
 	@JsonProperty("preferenceOrder")
@@ -40,9 +40,9 @@ public class PlanWedding {
 	* @return
 	* The address
 	*/
-	@JsonProperty("address")
+	@JsonProperty("Address")
 	public Address getAddress() {
-	return address;
+	return Address;
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class PlanWedding {
 	*/
 	@JsonProperty("address")
 	public void setAddress(Address address) {
-	this.address = address;
+	this.Address = address;
 	}
 
 	/**
