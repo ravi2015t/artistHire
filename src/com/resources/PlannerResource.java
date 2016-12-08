@@ -20,15 +20,20 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.codehaus.jackson.map.JsonSerializer;
+
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.document.spec.PutItemSpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
+import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClient;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
@@ -62,8 +67,8 @@ import io.searchbox.core.SearchResult;
 @Path("/planner")
 
 public class PlannerResource {
-	static String userTable = "User";
-	static String vendor = "Vendor";
+	static String userTable = "user";
+	static String vendor = "vendor";
 
 	static String planWedding = "planWeddding";
 	static String confirmedEvents = "confirmEvents";
@@ -75,17 +80,16 @@ public class PlannerResource {
 	static BasicAWSCredentials awsCreds = new BasicAWSCredentials(awsCredentialsFile.getProperty("accessKey"),
 			awsCredentialsFile.getProperty("secretKey"));
 
-	static AmazonDynamoDBClient client = new AmazonDynamoDBClient();
+	static AmazonDynamoDBClient client = new AmazonDynamoDBClient(awsCreds);
 
-	static DynamoDB dynamoDB = new DynamoDB(new AmazonDynamoDBClient(awsCreds));
+	static DynamoDB dynamoDB = new DynamoDB(client);
 
 	// new ProfileCredentialsProvider()));
 	// static DynamoDB dynamoDB = new DynamoDB(getclient(client));
-	public static AmazonDynamoDBClient getclient(AmazonDynamoDBClient client) {
-		client.withEndpoint("http://localhost:8000");
-		return client;
-	}
-
+	/*
+	 * public static AmazonDynamoDBClient getclient(AmazonDynamoDBClient client)
+	 * { client.withEndpoint("http://localhost:8000"); return client; }
+	 */
 	private static String indexName = WeddingPlannerExecutor.getPropertiesFile("AwsCredentials.properties")
 			.getProperty("index-name");
 	private static String mappingName = WeddingPlannerExecutor.getPropertiesFile("AwsCredentials.properties")
@@ -137,7 +141,7 @@ public class PlannerResource {
 	 * allTweets.add(temp); } } return allTweets; }
 	 */
 	@POST
-	@Path("/user/signup")
+	@Path("/userSignup")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response signupUser(String msg) {
 		Gson gson = new Gson();
@@ -146,7 +150,7 @@ public class PlannerResource {
 		try {
 			User user = gson.fromJson(msg, User.class);
 			Item item = new Item().withPrimaryKey("username", user.getUsername())
-					.withString("firstName", user.getFirstname()).withString("lastName", user.getLastname())
+					.withString("firstname", user.getFirstname()).withString("lastname", user.getLastname())
 					.withMap("Address",
 							new ValueMap().withString("street", user.getAddress().getStreet())
 									.withString("city", user.getAddress().getCity())
@@ -162,6 +166,69 @@ public class PlannerResource {
 		return Response.status(200).build();
 
 	}
+
+	@GET
+	@Path("/userLogin/{username}/{password}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public boolean LoginUser(
+		   @PathParam("username") String userName,
+   		   @PathParam("password") String Password) 
+	   {
+		boolean isUser = false;
+		String response = "";
+		Table table = dynamoDB.getTable(userTable);
+		try {
+	
+			Item item = table.getItem("username", userName, "password", null);
+			System.out.println("Printing item after retrieving it....");
+			System.out.println(item.toJSONPretty());
+			response = item.toJSON();
+			JsonObject jobj = new Gson().fromJson(response, JsonObject.class);    
+			String result = jobj.get("password").toString();
+			if(result.equals(Password))
+			{
+				isUser = true;
+			}
+		} catch (Exception e) {
+			System.err.println("GetItem failed.");
+			System.err.println(e.getMessage());
+		}
+
+
+		return isUser;	
+	   }
+	
+	@GET
+	@Path("/vendorLogin/{username}/{password}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public boolean LoginVendor(
+		   @PathParam("username") String userName,
+   		   @PathParam("password") String Password) 
+	   {
+		boolean isUser = false;
+		String response = "";
+		Table table = dynamoDB.getTable(vendor);
+		try {
+	
+			Item item = table.getItem("username", userName, "password", null);
+			System.out.println("Printing item after retrieving it....");
+			System.out.println(item.toJSONPretty());
+			response = item.toJSON();
+			JsonObject jobj = new Gson().fromJson(response, JsonObject.class);    
+			String result = jobj.get("password").toString();
+			if(result.equals(Password))
+			{
+				isUser = true;
+			}
+		} catch (Exception e) {
+			System.err.println("GetItem failed.");
+			System.err.println(e.getMessage());
+		}
+
+
+		return isUser;	
+	   }
+
 	/*
 	 * ObjectMapper mapper = new ObjectMapper(); try { SNSmodel snsmod =
 	 * mapper.readValue(msg, SNSmodel.class);
@@ -203,7 +270,7 @@ public class PlannerResource {
 	 */
 
 	@GET
-	@Path("/user/getProfile/{username}")
+	@Path("/usergetProfile/{username}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getProfile(@PathParam("username") String userName) {
 		Table table = dynamoDB.getTable(userTable);
@@ -211,8 +278,7 @@ public class PlannerResource {
 		try {
 			// Should be Implementing as a LIST
 
-			Item item = table.getItem("username", userName,
-					"firstname, secondname, phoneNumber, Address, rating, users", null);
+			Item item = table.getItem("username", userName, "firstname, lastname, phoneNumber, Address", null);
 
 			System.out.println("Printing item after retrieving it....");
 			System.out.println(item.toJSONPretty());
@@ -242,28 +308,44 @@ public class PlannerResource {
 	}
 
 	@GET
-	@Path("/vendor/getProfile/{username}")
+	@Path("/vendorGetProfile/{username}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Location> getProfileVendor(@PathParam("username") String userName) {
-		return null;
+	public String getProfileVendor(@PathParam("username") String userName) {
+		Table table = dynamoDB.getTable(vendor);
+		String response = "";
+		try {			
+			Item item = table.getItem("username", userName,
+					"firstname, secondname, phoneNumber, Address, rating, users", null);
+
+			System.out.println("Printing item after retrieving it....");
+			System.out.println(item.toJSONPretty());
+			response = item.toJSON();
+
+		} catch (Exception e) {
+			System.err.println("GetItem failed.");
+			System.err.println(e.getMessage());
+		}
+
+		return response;
 	}
 
 	@GET
-	@Path("/user/searchVendors/{query}")
+	@Path("/userSearchVendors/{query}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Location> getSearchResults(@PathParam("username") String userName) {
 		return null;
 	}
 
 	@GET
-	@Path("/user/MyWedding/{username}")
+	@Path("/userMyWedding/{username}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getMyWedding(@PathParam("username") String userName) {
 		Table table = dynamoDB.getTable(confirmedEvents);
 		String response = "";
 		try {
-			// Should be Implementing as a LIST
-
+			// will return all the documents that match with the username.
+			//might have to implement a query instead of retrieve
+			
 			Item item = table.getItem("username", userName, "date, price, Vendor, Address", null);
 
 			System.out.println("Printing item after retrieving it....");
@@ -280,7 +362,7 @@ public class PlannerResource {
 	}
 
 	@POST
-	@Path("/vendor/photographer/signup")
+	@Path("/vendorPhotographer/signup")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response signupPhotographer(String msg) {
 		Gson gson = new Gson();
@@ -289,7 +371,8 @@ public class PlannerResource {
 
 		try {
 			Vendor ven = gson.fromJson(msg, Vendor.class);
-			Item item = new Item().withPrimaryKey("username", ven.getUsername())
+			Item item = new Item()
+					.withPrimaryKey("username", ven.getUsername())
 					.withString("firstName", ven.getFirstname()).withString("lastName", ven.getLastname())
 					.withString("password", ven.getPassword())
 					.withMap("Address",
@@ -297,8 +380,14 @@ public class PlannerResource {
 									.withString("city", ven.getAddress().getCity())
 									.withString("state", ven.getAddress().getState())
 									.withNumber("zip", ven.getAddress().getZip()))
-					.withString("phoneNumber", ven.getPhoneNumber()).withString("type", ven.getType());
-			table.putItem(item);
+					.withString("phoneNumber", ven.getPhoneNumber())
+					.withInt("type", ven.getType())
+					.withInt("rating", ven.getRating())
+					.withLong("price", ven.getPrice())
+					.withInt("nusers", ven.getNusers());
+			PutItemSpec pit = new PutItemSpec().withItem(item).withConditionExpression("attribute_not_exists(username)");
+			
+			table.putItem(pit);
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -326,7 +415,7 @@ public class PlannerResource {
 	}
 
 	@POST
-	@Path("/user/registerWedding")
+	@Path("/userRegisterWedding")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response registerWedding(String msg) {
 		Gson gson = new Gson();
@@ -360,7 +449,7 @@ public class PlannerResource {
 	 * approved should push it to confirmed Events and delete here
 	 */
 	@POST
-	@Path("/user/bookEvent")
+	@Path("/userBookEvent")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response bookEvent(String msg) {
 		Gson gson = new Gson();
@@ -394,7 +483,7 @@ public class PlannerResource {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
 
 		return Response.status(200).build();
 
@@ -404,34 +493,32 @@ public class PlannerResource {
 
 	// set file name and album name in fileDetail
 	// send /profilepic/filename if its a profile pic
-	@POST
-	@Path("/user/upload")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response uploadProfileFile(@FormDataParam("file") InputStream uploadedInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileDetail) {
-
-		ImageDetails imd = new ImageDetails();
-		SendImagetoSQS sImg = new SendImagetoSQS();
-		ObjectMapper mapper = new ObjectMapper();
-
-		try {
-			// check the file location
-			String uploadedFileLocation = "d://uploaded/" + fileDetail.getFileName();
-
-			writeToFile(uploadedInputStream, uploadedFileLocation);
-			imd.setPath(uploadedFileLocation);
-			imd.setName(fileDetail.getFileName());
-			String jsonInString = mapper.writeValueAsString(imd);
-			sImg.sendtoQ(jsonInString);
-		} catch (Exception ex) {
-			System.out.println("Exception while uploading picture");
-			ex.printStackTrace();
-		}
-		return Response.status(200).build();
-
-	}
-
-	private void writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
+	/*
+	 * @POST
+	 * 
+	 * @Path("/userUpload")
+	 * 
+	 * @Consumes(MediaType.MULTIPART_FORM_DATA) public Response
+	 * uploadProfileFile(@FormDataParam("file") InputStream uploadedInputStream,
+	 * 
+	 * @FormDataParam("file") FormDataContentDisposition fileDetail) {
+	 * 
+	 * ImageDetails imd = new ImageDetails(); SendImagetoSQS sImg = new
+	 * SendImagetoSQS(); ObjectMapper mapper = new ObjectMapper();
+	 * 
+	 * try { // check the file location String uploadedFileLocation =
+	 * "d://uploaded/" + fileDetail.getFileName();
+	 * 
+	 * writeToFile(uploadedInputStream, uploadedFileLocation);
+	 * imd.setPath(uploadedFileLocation); imd.setName(fileDetail.getFileName());
+	 * String jsonInString = mapper.writeValueAsString(imd);
+	 * sImg.sendtoQ(jsonInString); } catch (Exception ex) {
+	 * System.out.println("Exception while uploading picture");
+	 * ex.printStackTrace(); } return Response.status(200).build();
+	 * 
+	 * }
+	 * 
+	 */ private void writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
 
 		try {
 			OutputStream out = new FileOutputStream(new File(uploadedFileLocation));

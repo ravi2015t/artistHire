@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.TimeZone;
 
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
@@ -19,25 +21,30 @@ import com.amazonaws.services.dynamodbv2.model.LocalSecondaryIndex;
 import com.amazonaws.services.dynamodbv2.model.Projection;
 import com.amazonaws.services.dynamodbv2.model.ProjectionType;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
+import com.daemonservices.WeddingPlannerExecutor;
 
 public class TestCreateDynamo {
+	private static final Properties awsCredentialsFile = WeddingPlannerExecutor.
+			getPropertiesFile("AwsCredentials.properties");
+	static BasicAWSCredentials awsCreds = new BasicAWSCredentials(awsCredentialsFile.getProperty("accessKey"), awsCredentialsFile.getProperty("secretKey"));
 
-	static AmazonDynamoDBClient client = new AmazonDynamoDBClient();
+
+	static AmazonDynamoDBClient client = new AmazonDynamoDBClient(awsCreds);
 
 	  
 	  //  static DynamoDB dynamoDB = new DynamoDB(new AmazonDynamoDBClient(
 	    //        new ProfileCredentialsProvider()));
-		static DynamoDB dynamoDB = new DynamoDB(getclient(client));
-	    public static AmazonDynamoDBClient getclient(AmazonDynamoDBClient client)
+		static DynamoDB dynamoDB = new DynamoDB(client);
+	   /* public static AmazonDynamoDBClient getclient(AmazonDynamoDBClient client)
 	    {
 	    	 client.withEndpoint("http://localhost:8000"); 
 	         return client;
 	    }
-
+*/
     static SimpleDateFormat dateFormatter = new SimpleDateFormat(
             "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
-    static String productCatalogTableName = "User";
+    static String productCatalogTableName = "user";
     static String forumTableName = "Forum";
     static String threadTableName = "Thread";
     static String replyTableName = "Reply";
@@ -46,7 +53,7 @@ public class TestCreateDynamo {
 
         try {
 
-            deleteTable(productCatalogTableName);
+           deleteTable(productCatalogTableName);
             /*deleteTable(forumTableName);
             deleteTable(threadTableName);
             deleteTable(replyTableName);

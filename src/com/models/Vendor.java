@@ -18,21 +18,21 @@ public class Vendor {
 	private String username;
 	@JsonProperty("password")
 	private String password;
-	@JsonProperty("Price")
+	@JsonProperty("price")
 	private Long price;
 	@JsonProperty("phoneNumber")
 	private String phoneNumber;
-	@JsonProperty("address")
-	private Address address;
+	@JsonProperty("Address")
+	private Address Address;
 	@JsonProperty("Calendar")
 	private Calendar calendar;
 	@JsonProperty("rating")
 	private int rating;
-	@JsonProperty("Nusers")
+	@JsonProperty("nusers")
 	private int nusers;
 	
 	@JsonProperty("type")
-	private String type;
+	private int type;
 	
 	@JsonProperty("firstname")
 	public String getFirstname() {
@@ -45,11 +45,11 @@ public class Vendor {
 	* The firstname
 	*/
 	@JsonProperty("type")
-	public void setType(String type) {
+	public void setType(int type) {
 	this.type = type;
 	}
 	@JsonProperty("type")
-	public String getType() {
+	public int getType() {
 	return type;
 	}
 
@@ -129,7 +129,7 @@ public class Vendor {
 	* @return
 	* The price
 	*/
-	@JsonProperty("Price")
+	@JsonProperty("price")
 	public Long getPrice() {
 	return price;
 	}
@@ -139,7 +139,7 @@ public class Vendor {
 	* @param price
 	* The Price
 	*/
-	@JsonProperty("Price")
+	@JsonProperty("price")
 	public void setPrice(Long price) {
 	this.price = price;
 	}
@@ -169,9 +169,9 @@ public class Vendor {
 	* @return
 	* The address
 	*/
-	@JsonProperty("address")
+	@JsonProperty("Address")
 	public Address getAddress() {
-	return address;
+	return Address;
 	}
 
 	/**
@@ -179,9 +179,9 @@ public class Vendor {
 	* @param address
 	* The address
 	*/
-	@JsonProperty("address")
+	@JsonProperty("Address")
 	public void setAddress(Address address) {
-	this.address = address;
+	this.Address = address;
 	}
 
 		@JsonProperty("Calendar")
@@ -217,6 +217,21 @@ public class Vendor {
 	@JsonProperty("rating")
 	public void setRating(int rating) {
 	this.rating = rating;
+	}
+
+	@JsonProperty("nusers")
+	public int getNusers() {
+	return nusers;
+	}
+
+	/**
+	* 
+	* @param rating
+	* The rating
+	*/
+	@JsonProperty("nusers")
+	public void setNusers(int nusers) {
+	this.nusers = nusers;
 	}
 
 	

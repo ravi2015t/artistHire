@@ -5,7 +5,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Properties;
 
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.document.DeleteItemOutcome;
@@ -18,33 +20,34 @@ import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.ReturnValue;
+import com.daemonservices.WeddingPlannerExecutor;
 
 public class CrudDynamoDB {
-	static AmazonDynamoDBClient client = new AmazonDynamoDBClient();
+	private static final Properties awsCredentialsFile = WeddingPlannerExecutor.
+			getPropertiesFile("AwsCredentials.properties");
+	static BasicAWSCredentials awsCreds = new BasicAWSCredentials(awsCredentialsFile.getProperty("accessKey"), awsCredentialsFile.getProperty("secretKey"));
+
+
+	static AmazonDynamoDBClient client = new AmazonDynamoDBClient(awsCreds);
 
 	  
 	  //  static DynamoDB dynamoDB = new DynamoDB(new AmazonDynamoDBClient(
 	    //        new ProfileCredentialsProvider()));
-		static DynamoDB dynamoDB = new DynamoDB(getclient(client));
-	    public static AmazonDynamoDBClient getclient(AmazonDynamoDBClient client)
-	    {
-	    	 client.withEndpoint("http://localhost:8000"); 
-	         return client;
-	    }
+		static DynamoDB dynamoDB = new DynamoDB(client);
 
 
-    static String user = "User";
+    static String user = "user";
     static String planWedding= "planWeddding";
     static String confirmedEvents = "confirmEvents"; 
     public static void main(String[] args) throws IOException {
 
         //createItems();
 
-     //   retrieveItem();
+        retrieveItem();
 
         // Perform various updates.
        // updateMultipleAttributes();
-        updateAddNewAttribute();
+        //updateAddNewAttribute();
        // updateExistingAttributeConditionally();
 
         // Delete the item.
@@ -115,7 +118,7 @@ public class CrudDynamoDB {
 
         try {
 
-            Item item = table.getItem("username", "rambit",  "firstName, lastName, phoneNumber, Address", null);
+            Item item = table.getItem("username", "sam",  "firstname, lastname, phoneNumber, Address", null);
 
             System.out.println("Printing item after retrieving it....");
             System.out.println(item.toJSONPretty());

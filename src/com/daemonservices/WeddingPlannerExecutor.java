@@ -120,7 +120,7 @@ public class WeddingPlannerExecutor implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
 		// Create the index first
-		this.createESIndex();
+		/*this.createESIndex();
                 System.out.println("After creating index--------------");
 		// Get all topics and spawn threads, such that one thread should cover two topics
 		String follow = WeddingPlannerExecutor.twitterConfFile.getProperty("follow");
@@ -128,20 +128,20 @@ public class WeddingPlannerExecutor implements ServletContextListener {
 		
 		this.exeService.execute(new FetchTweetsTask("sample-client", followList));
 		int counter = 0;
-		/*while(counter < followList.length) {
+		while(counter < followList.length) {
 			this.exeService.execute(new FetchTweetsTask("client-" + counter, followList[counter++],
 					followList[counter++]));
-		}*/
+		}
 	    this.exeService.execute(new ReceiveQueue());
 	    this.exeService.execute(new SNSReceiver());
 	// run queue receiver 
 			//run sns receiver
-     
+     */
 		}
 	
 	
 	public static void main(String[] args) {
-		//WeddingPlannerExecutor e = new WeddingPlannerExecutor();
-		//e.contextInitialized(null);
+		WeddingPlannerExecutor e = new WeddingPlannerExecutor();
+		e.contextInitialized(null);
 	}
 }
