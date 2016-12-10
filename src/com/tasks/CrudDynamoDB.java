@@ -16,6 +16,7 @@ import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.UpdateItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.spec.DeleteItemSpec;
+import com.amazonaws.services.dynamodbv2.document.spec.PutItemSpec;
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
@@ -36,14 +37,14 @@ public class CrudDynamoDB {
 		static DynamoDB dynamoDB = new DynamoDB(client);
 
 
-    static String user = "user";
+    static String user = "vendor";
     static String planWedding= "planWeddding";
     static String confirmedEvents = "confirmEvents"; 
     public static void main(String[] args) throws IOException {
 
-        //createItems();
+        createItems();
 
-        retrieveItem();
+     // retrieveItem();
 
         // Perform various updates.
        // updateMultipleAttributes();
@@ -65,7 +66,7 @@ public class CrudDynamoDB {
 
             Item item = new Item()
                 .withPrimaryKey("username", "rambit")
-                .withString("firstName", "Matt")
+                .withString("firstName", "Ravi")
                 .withString("lastName", "Daemon")
                 .withMap( "Address", 
                     new ValueMap()
@@ -74,10 +75,13 @@ public class CrudDynamoDB {
                     .withString("state", "NY")
                     .withString("zip", "11209"))
                 .withString("phoneNumber", "9008305270");
-                 table.putItem(item);
+                 //table.putItem(item);
 
-                 
-                  Date d = new Date();
+         PutItemSpec pit = new PutItemSpec().withItem(item).withConditionExpression("attribute_not_exists(username)");
+         table.putItem(pit);
+
+     			
+                /*  Date d = new Date();
                   item = new Item()
                          .withPrimaryKey("username", "rambit")
                          .withString("date", d.toString())
@@ -105,7 +109,7 @@ public class CrudDynamoDB {
                                   .withString("Vendor", "photographer")
                                   .withString("Name", "RAVAN");
                                    table3.putItem(item);
-                          
+                */          
         } catch (Exception e) {
             System.err.println("Create items failed.");
             System.err.println(e.getMessage());
@@ -118,7 +122,7 @@ public class CrudDynamoDB {
 
         try {
 
-            Item item = table.getItem("username", "sam",  "firstname, lastname, phoneNumber, Address", null);
+            Item item = table.getItem("username", "rambit",  "firstName, lastName, phoneNumber, Address", null);
 
             System.out.println("Printing item after retrieving it....");
             System.out.println(item.toJSONPretty());

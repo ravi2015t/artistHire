@@ -14,7 +14,7 @@ import org.elasticsearch.common.settings.Settings.Builder;
 
 import com.tasks.FetchTweetsTask;
 import com.tasks.ReceiveQueue;
-import com.tasks.SNSReceiver;
+//import com.tasks.SNSReceiver;
 
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;

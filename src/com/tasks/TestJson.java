@@ -1,4 +1,4 @@
-package com.tasks;
+/*package com.tasks;
 
 import java.io.File;
 import java.io.FileReader;
@@ -34,3 +34,4 @@ public class TestJson {
 	}
 
 }
+*/

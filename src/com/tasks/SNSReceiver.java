@@ -1,4 +1,4 @@
-package com.tasks;
+/*package com.tasks;
                         
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -28,7 +28,7 @@ import com.daemonservices.ElasticSearchHose;
 import com.daemonservices.WeddingPlannerExecutor;
 import com.models.Tweet;
 
-import org.codehaus.jackson.map.ObjectMapper;
+//import org.codehaus.jackson.map.ObjectMapper;
 import org.mortbay.jetty.Request;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.AbstractHandler;
@@ -82,3 +82,4 @@ public class SNSReceiver implements Runnable {
 
 
 }
+*/
