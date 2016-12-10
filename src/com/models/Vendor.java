@@ -27,12 +27,12 @@ public class Vendor {
 	@JsonProperty("Calendar")
 	private Calendar calendar;
 	@JsonProperty("rating")
-	private int rating;
+	private double rating;
 	@JsonProperty("nusers")
 	private int nusers;
 	
 	@JsonProperty("type")
-	private int type;
+	private String type;
 	
 	@JsonProperty("firstname")
 	public String getFirstname() {
@@ -45,11 +45,11 @@ public class Vendor {
 	* The firstname
 	*/
 	@JsonProperty("type")
-	public void setType(int type) {
+	public void setType(String type) {
 	this.type = type;
 	}
 	@JsonProperty("type")
-	public int getType() {
+	public String getType() {
 	return type;
 	}
 
@@ -205,7 +205,7 @@ public class Vendor {
 	* The rating
 	*/
 	@JsonProperty("rating")
-	public int getRating() {
+	public double getRating() {
 	return rating;
 	}
 
@@ -215,7 +215,7 @@ public class Vendor {
 	* The rating
 	*/
 	@JsonProperty("rating")
-	public void setRating(int rating) {
+	public void setRating(double rating) {
 	this.rating = rating;
 	}
 

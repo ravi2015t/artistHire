@@ -1,4 +1,5 @@
 package com.resources;
+
 //
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,9 +32,13 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.document.UpdateItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.spec.PutItemSpec;
+import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
+import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
+import com.amazonaws.services.dynamodbv2.model.ReturnValue;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClient;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
@@ -49,6 +54,7 @@ import com.google.gson.JsonObject;
 import com.models.ConfirmedEvent;
 import com.models.ImageDetails;
 import com.models.PlanWedding;
+import com.models.RateVendor;
 import com.models.Request;
 import com.models.SNSmodel;
 import com.models.SearchResults;
@@ -148,8 +154,7 @@ public class PlannerResource {
 		try {
 			User user = gson.fromJson(msg, User.class);
 			Item item = new Item().withPrimaryKey("username", user.getUsername())
-					.withString("firstname", user.getFirstname())
-					.withString("password", user.getPassword())
+					.withString("firstname", user.getFirstname()).withString("password", user.getPassword())
 					.withString("lastname", user.getLastname())
 					.withMap("Address",
 							new ValueMap().withString("street", user.getAddress().getStreet())
@@ -157,39 +162,38 @@ public class PlannerResource {
 									.withString("state", user.getAddress().getState())
 									.withNumber("zip", user.getAddress().getZip()))
 					.withString("phoneNumber", user.getPhoneNumber());
-       PutItemSpec pit = new PutItemSpec().withItem(item).withConditionExpression("attribute_not_exists(username)");
-	   table.putItem(pit);
+			PutItemSpec pit = new PutItemSpec().withItem(item)
+					.withConditionExpression("attribute_not_exists(username)");
+			table.putItem(pit);
 
 		} catch (Exception ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
+			return Response.status(200).entity("Failure").build();
+	
 		}
-		return Response.status(200).build();
+		return Response.status(200).entity("Success").build();
 
 	}
 
 	@GET
 	@Path("/userLogin/{username}/{password}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public boolean LoginUser(
-		   @PathParam("username") String userName,
-   		   @PathParam("password") String Password) 
-	   {
+	public boolean LoginUser(@PathParam("username") String userName, @PathParam("password") String Password) {
 		System.out.println("Username" + userName + "Password" + Password);
 		boolean isUser = false;
 		String response = "";
 		Table table = dynamoDB.getTable(userTable);
 		try {
-	
+
 			Item item = table.getItem("username", userName, "password", null);
 			System.out.println("Printing item after retrieving it....");
 			System.out.println(item.toJSONPretty());
 			response = item.toJSON();
-			JsonObject jobj = new Gson().fromJson(response, JsonObject.class);    
+			JsonObject jobj = new Gson().fromJson(response, JsonObject.class);
 			String result = jobj.get("password").toString();
 			System.out.println("RESULT" + result);
-			if(result.equals("\""+Password+"\""))
-			{
+			if (result.equals("\"" + Password + "\"")) {
 				isUser = true;
 			}
 		} catch (Exception e) {
@@ -197,30 +201,25 @@ public class PlannerResource {
 			System.err.println(e.getMessage());
 		}
 
+		return isUser;
+	}
 
-		return isUser;	
-	   }
-	
 	@GET
 	@Path("/vendorLogin/{username}/{password}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public boolean LoginVendor(
-		   @PathParam("username") String userName,
-   		   @PathParam("password") String Password) 
-	   {
+	public boolean LoginVendor(@PathParam("username") String userName, @PathParam("password") String Password) {
 		boolean isUser = false;
 		String response = "";
 		Table table = dynamoDB.getTable(vendor);
 		try {
-	
+
 			Item item = table.getItem("username", userName, "password", null);
 			System.out.println("Printing item after retrieving it....");
 			System.out.println(item.toJSONPretty());
 			response = item.toJSON();
-			JsonObject jobj = new Gson().fromJson(response, JsonObject.class);    
+			JsonObject jobj = new Gson().fromJson(response, JsonObject.class);
 			String result = jobj.get("password").toString();
-			if(result.equals("\""+Password+"\""))
-			{
+			if (result.equals("\"" + Password + "\"")) {
 				isUser = true;
 			}
 		} catch (Exception e) {
@@ -228,9 +227,8 @@ public class PlannerResource {
 			System.err.println(e.getMessage());
 		}
 
-
-		return isUser;	
-	   }
+		return isUser;
+	}
 
 	/*
 	 * ObjectMapper mapper = new ObjectMapper(); try { SNSmodel snsmod =
@@ -316,7 +314,7 @@ public class PlannerResource {
 	public String getProfileVendor(@PathParam("username") String userName) {
 		Table table = dynamoDB.getTable(vendor);
 		String response = "";
-		try {			
+		try {
 			Item item = table.getItem("username", userName,
 					"firstname, secondname, phoneNumber, Address, rating, nusers", null);
 
@@ -347,8 +345,8 @@ public class PlannerResource {
 		String response = "";
 		try {
 			// will return all the documents that match with the username.
-			//might have to implement a query instead of retrieve
-			
+			// might have to implement a query instead of retrieve
+
 			Item item = table.getItem("username", userName, "date, price, Vendor, Address", null);
 
 			System.out.println("Printing item after retrieving it....");
@@ -374,8 +372,7 @@ public class PlannerResource {
 
 		try {
 			Vendor ven = gson.fromJson(msg, Vendor.class);
-			Item item = new Item()
-					.withPrimaryKey("username", ven.getUsername())
+			Item item = new Item().withPrimaryKey("username", ven.getUsername())
 					.withString("firstName", ven.getFirstname()).withString("lastName", ven.getLastname())
 					.withString("password", ven.getPassword())
 					.withMap("Address",
@@ -384,12 +381,12 @@ public class PlannerResource {
 									.withString("state", ven.getAddress().getState())
 									.withNumber("zip", ven.getAddress().getZip()))
 					.withString("phoneNumber", ven.getPhoneNumber())
-					.withInt("type", ven.getType())
-					.withInt("rating", ven.getRating())
-					.withLong("price", ven.getPrice())
-					.withInt("nusers", ven.getNusers());
-			PutItemSpec pit = new PutItemSpec().withItem(item).withConditionExpression("attribute_not_exists(username)");
-			
+					.withString("type", ven.getType())
+					.withNumber("rating", 0).withLong("price", ven.getPrice())
+					.withInt("nusers", 0);
+			PutItemSpec pit = new PutItemSpec().withItem(item)
+					.withConditionExpression("attribute_not_exists(username)");
+
 			table.putItem(pit);
 
 		} catch (Exception e) {
@@ -411,8 +408,7 @@ public class PlannerResource {
 
 		try {
 			Vendor ven = gson.fromJson(msg, Vendor.class);
-			Item item = new Item()
-					.withPrimaryKey("username", ven.getUsername())
+			Item item = new Item().withPrimaryKey("username", ven.getUsername())
 					.withString("firstName", ven.getFirstname()).withString("lastName", ven.getLastname())
 					.withString("password", ven.getPassword())
 					.withMap("Address",
@@ -421,12 +417,12 @@ public class PlannerResource {
 									.withString("state", ven.getAddress().getState())
 									.withNumber("zip", ven.getAddress().getZip()))
 					.withString("phoneNumber", ven.getPhoneNumber())
-					.withInt("type", ven.getType())
-					.withInt("rating", ven.getRating())
-					.withLong("price", ven.getPrice())
-					.withInt("nusers", ven.getNusers());
-			PutItemSpec pit = new PutItemSpec().withItem(item).withConditionExpression("attribute_not_exists(username)");
-			
+					.withString("type", ven.getType())
+					.withNumber("rating", 0).withLong("price", ven.getPrice())
+					.withInt("nusers", 0);
+			PutItemSpec pit = new PutItemSpec().withItem(item)
+					.withConditionExpression("attribute_not_exists(username)");
+
 			table.putItem(pit);
 
 		} catch (Exception e) {
@@ -447,8 +443,7 @@ public class PlannerResource {
 
 		try {
 			Vendor ven = gson.fromJson(msg, Vendor.class);
-			Item item = new Item()
-					.withPrimaryKey("username", ven.getUsername())
+			Item item = new Item().withPrimaryKey("username", ven.getUsername())
 					.withString("firstName", ven.getFirstname()).withString("lastName", ven.getLastname())
 					.withString("password", ven.getPassword())
 					.withMap("Address",
@@ -457,12 +452,13 @@ public class PlannerResource {
 									.withString("state", ven.getAddress().getState())
 									.withNumber("zip", ven.getAddress().getZip()))
 					.withString("phoneNumber", ven.getPhoneNumber())
-					.withInt("type", ven.getType())
-					.withInt("rating", ven.getRating())
+					.withString("type", ven.getType())
+					.withNumber("rating", 0)
 					.withLong("price", ven.getPrice())
-					.withInt("nusers", ven.getNusers());
-			PutItemSpec pit = new PutItemSpec().withItem(item).withConditionExpression("attribute_not_exists(username)");
-			
+					.withInt("nusers", 0);
+			PutItemSpec pit = new PutItemSpec().withItem(item)
+					.withConditionExpression("attribute_not_exists(username)");
+
 			table.putItem(pit);
 
 		} catch (Exception e) {
@@ -471,6 +467,44 @@ public class PlannerResource {
 		}
 
 		return Response.status(200).build();
+	}
+
+	@POST
+	@Path("/rateVendor")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response rateVendor(String msg) {
+		Gson gson = new Gson();
+
+		Table table = dynamoDB.getTable(vendor);
+		String response = "";
+		try {
+			RateVendor ven = gson.fromJson(msg, RateVendor.class);
+
+			Item item = table.getItem("username", ven.getUsername(), "rating", "nusers", null);
+			System.out.println("Printing item after retrieving it....");
+			System.out.println(item.toJSONPretty());
+			response = item.toJSON();
+			JsonObject jobj = new Gson().fromJson(response, JsonObject.class);
+			double rating = jobj.get("rating").getAsDouble();
+			int nusers = jobj.get("nusers").getAsInt();
+			rating = ((rating * nusers) + ven.getRating()) / (nusers + 1);
+			nusers += 1;
+
+			UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey("username", ven.getUsername())
+					.withUpdateExpression("add #a :val1 add #na=:val2")
+					.withNameMap(new NameMap().with("#a", "rating").with("#na", "nusers"))
+					.withValueMap(new ValueMap().withNumber(":val1", rating).withNumber(":val2", nusers))
+					.withReturnValues(ReturnValue.ALL_NEW);
+			UpdateItemOutcome outcome = table.updateItem(updateItemSpec);
+			 System.out.println(outcome.getItem().toJSONPretty());
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return Response.status(200).build();
+
 	}
 
 	@POST
