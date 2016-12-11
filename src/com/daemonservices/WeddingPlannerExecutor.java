@@ -13,6 +13,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.settings.Settings.Builder;
 
 import com.tasks.FetchTweetsTask;
+import com.tasks.ReceiveProcessImage;
 import com.tasks.ReceiveQueue;
 //import com.tasks.SNSReceiver;
 
@@ -137,6 +138,8 @@ public class WeddingPlannerExecutor implements ServletContextListener {
 	// run queue receiver 
 			//run sns receiver
      */
+		//this.exeService.execute(new ReceiveProcessImage());
+	    
 		}
 	
 	

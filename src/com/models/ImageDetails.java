@@ -1,5 +1,7 @@
 package com.models;
 
+import java.io.File;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ImageDetails {
@@ -7,7 +9,6 @@ public class ImageDetails {
 	private String path;
 	@JsonProperty("name")
 	private String name;
-	
 	/**
 	* 
 	* @param srteet

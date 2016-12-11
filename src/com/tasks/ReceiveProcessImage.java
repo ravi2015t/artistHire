@@ -65,8 +65,8 @@ public class ReceiveProcessImage implements Runnable{
         		 * I assume folder is either vendor/profile_pictures/vendor_id/picture.png or vendor/albums/vendor_id/image1.png
         		 * For user - folder value = user/profile_pictures/user_id/picture.png
         		 */
-        		s3client.putObject(new PutObjectRequest(bucketName, imd.getName(), 
-        				new File("./" + imd.getName())));
+        		s3client.putObject(new PutObjectRequest(bucketName, imd.getPath(), 
+        				new File(imd.getName())));
         	
             }
           }

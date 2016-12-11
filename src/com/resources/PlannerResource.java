@@ -1,17 +1,19 @@
 package com.resources;
 
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 //
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Scanner;
 
+import javax.imageio.ImageIO;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -21,13 +23,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-//import org.codehaus.jackson.map.JsonSerializer;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
-import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
@@ -37,43 +36,28 @@ import com.amazonaws.services.dynamodbv2.document.spec.PutItemSpec;
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
-import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
 import com.amazonaws.services.dynamodbv2.model.ReturnValue;
-import com.amazonaws.services.sqs.AmazonSQS;
-import com.amazonaws.services.sqs.AmazonSQSClient;
-import com.amazonaws.services.sqs.model.SendMessageRequest;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.daemonservices.ElasticSearchHose;
 import com.daemonservices.WeddingPlannerExecutor;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.models.ConfirmedEvent;
 import com.models.ImageDetails;
 import com.models.PlanWedding;
 import com.models.RateVendor;
 import com.models.Request;
-import com.models.SNSmodel;
-import com.models.SearchResults;
-import com.models.Tweet;
 import com.models.User;
 import com.models.Vendor;
 import com.tasks.FetchTweetsTask.Location;
 import com.tasks.SendImagetoSQS;
-
-import io.searchbox.client.JestClient;
-import io.searchbox.core.Search;
-import io.searchbox.core.SearchResult;
 
 @Path("/planner")
 
 public class PlannerResource {
 	static String userTable = "user";
 	static String vendor = "vendor";
-
+    static String SUFFIX = "/";
 	static String planWedding = "planWeddding";
 	static String confirmedEvents = "confirmEvents";
 	static String tobeApprovedEventsUser = "approveEventsUser";
@@ -170,7 +154,7 @@ public class PlannerResource {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
 			return Response.status(200).entity("Failure").build();
-	
+
 		}
 		return Response.status(200).entity("Success").build();
 
@@ -380,10 +364,8 @@ public class PlannerResource {
 									.withString("city", ven.getAddress().getCity())
 									.withString("state", ven.getAddress().getState())
 									.withNumber("zip", ven.getAddress().getZip()))
-					.withString("phoneNumber", ven.getPhoneNumber())
-					.withString("type", ven.getType())
-					.withNumber("rating", 0).withLong("price", ven.getPrice())
-					.withInt("nusers", 0);
+					.withString("phoneNumber", ven.getPhoneNumber()).withString("type", ven.getType())
+					.withNumber("rating", 0).withLong("price", ven.getPrice()).withInt("nusers", 0);
 			PutItemSpec pit = new PutItemSpec().withItem(item)
 					.withConditionExpression("attribute_not_exists(username)");
 
@@ -416,10 +398,8 @@ public class PlannerResource {
 									.withString("city", ven.getAddress().getCity())
 									.withString("state", ven.getAddress().getState())
 									.withNumber("zip", ven.getAddress().getZip()))
-					.withString("phoneNumber", ven.getPhoneNumber())
-					.withString("type", ven.getType())
-					.withNumber("rating", 0).withLong("price", ven.getPrice())
-					.withInt("nusers", 0);
+					.withString("phoneNumber", ven.getPhoneNumber()).withString("type", ven.getType())
+					.withNumber("rating", 0).withLong("price", ven.getPrice()).withInt("nusers", 0);
 			PutItemSpec pit = new PutItemSpec().withItem(item)
 					.withConditionExpression("attribute_not_exists(username)");
 
@@ -451,11 +431,8 @@ public class PlannerResource {
 									.withString("city", ven.getAddress().getCity())
 									.withString("state", ven.getAddress().getState())
 									.withNumber("zip", ven.getAddress().getZip()))
-					.withString("phoneNumber", ven.getPhoneNumber())
-					.withString("type", ven.getType())
-					.withNumber("rating", 0)
-					.withLong("price", ven.getPrice())
-					.withInt("nusers", 0);
+					.withString("phoneNumber", ven.getPhoneNumber()).withString("type", ven.getType())
+					.withNumber("rating", 0).withLong("price", ven.getPrice()).withInt("nusers", 0);
 			PutItemSpec pit = new PutItemSpec().withItem(item)
 					.withConditionExpression("attribute_not_exists(username)");
 
@@ -496,7 +473,7 @@ public class PlannerResource {
 					.withValueMap(new ValueMap().withNumber(":val1", rating).withNumber(":val2", nusers))
 					.withReturnValues(ReturnValue.ALL_NEW);
 			UpdateItemOutcome outcome = table.updateItem(updateItemSpec);
-			 System.out.println(outcome.getItem().toJSONPretty());
+			System.out.println(outcome.getItem().toJSONPretty());
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -586,32 +563,53 @@ public class PlannerResource {
 
 	// set file name and album name in fileDetail
 	// send /profilepic/filename if its a profile pic
-	/*
-	 * @POST
-	 * 
-	 * @Path("/userUpload")
-	 * 
-	 * @Consumes(MediaType.MULTIPART_FORM_DATA) public Response
-	 * uploadProfileFile(@FormDataParam("file") InputStream uploadedInputStream,
-	 * 
-	 * @FormDataParam("file") FormDataContentDisposition fileDetail) {
-	 * 
-	 * ImageDetails imd = new ImageDetails(); SendImagetoSQS sImg = new
-	 * SendImagetoSQS(); ObjectMapper mapper = new ObjectMapper();
-	 * 
-	 * try { // check the file location String uploadedFileLocation =
-	 * "d://uploaded/" + fileDetail.getFileName();
-	 * 
-	 * writeToFile(uploadedInputStream, uploadedFileLocation);
-	 * imd.setPath(uploadedFileLocation); imd.setName(fileDetail.getFileName());
-	 * String jsonInString = mapper.writeValueAsString(imd);
-	 * sImg.sendtoQ(jsonInString); } catch (Exception ex) {
-	 * System.out.println("Exception while uploading picture");
-	 * ex.printStackTrace(); } return Response.status(200).build();
-	 * 
-	 * }
-	 * 
-	 */ private void writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
+
+	@POST
+	@Path("/userUpload")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	public Response uploadProfileFile(@FormDataParam("file") InputStream uploadedInputStream,
+			@FormDataParam("file") FormDataContentDisposition fileDetail) {
+
+		ImageDetails imd = new ImageDetails();
+		SendImagetoSQS sImg = new SendImagetoSQS();
+		ObjectMapper mapper = new ObjectMapper();
+		File file = null;
+		
+		try { // check the file location
+			
+			String fileName = fileDetail.getFileName();
+		    File fileN = new File(fileName);
+			   file = File.createTempFile(fileN.getName(), ".png");
+			   Image image = ImageIO.read(uploadedInputStream);
+
+		       BufferedImage bi = createResizedCopy(image, 180, 180, true);
+		       ImageIO.write(bi, "png", file);
+		       
+		    imd.setPath(fileName);
+		    System.out.println("FILE NAME"+fileName);
+			imd.setName(file.getName());
+			System.out.println(file.getName());
+			String jsonInString = mapper.writeValueAsString(imd);
+			sImg.sendtoQ(jsonInString);
+		} catch (Exception ex) {
+			System.out.println("Exception while uploading picture");
+			ex.printStackTrace();
+		}
+		return Response.status(200).build();
+
+	}
+	public static BufferedImage createResizedCopy(Image originalImage, int scaledWidth, int scaledHeight, boolean preserveAlpha) {
+	    int imageType = preserveAlpha ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
+	    BufferedImage scaledBI = new BufferedImage(scaledWidth, scaledHeight, imageType);
+	    Graphics2D g = scaledBI.createGraphics();
+	    if (preserveAlpha) {
+	        g.setComposite(AlphaComposite.Src);
+	    }
+	    g.drawImage(originalImage, 0, 0, scaledWidth, scaledHeight, null);
+	    g.dispose();
+	    return scaledBI;
+	}
+	private void writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
 
 		try {
 			OutputStream out = new FileOutputStream(new File(uploadedFileLocation));
