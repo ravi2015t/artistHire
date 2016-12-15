@@ -1,4 +1,5 @@
 package com.tasks;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
@@ -24,234 +25,226 @@ import com.amazonaws.services.dynamodbv2.model.ReturnValue;
 import com.daemonservices.WeddingPlannerExecutor;
 
 public class CrudDynamoDB {
-	private static final Properties awsCredentialsFile = WeddingPlannerExecutor.
-			getPropertiesFile("AwsCredentials.properties");
-	static BasicAWSCredentials awsCreds = new BasicAWSCredentials(awsCredentialsFile.getProperty("accessKey"), awsCredentialsFile.getProperty("secretKey"));
+	private static final Properties awsCredentialsFile = WeddingPlannerExecutor
+			.getPropertiesFile("AwsCredentials.properties");
+	static BasicAWSCredentials awsCreds = new BasicAWSCredentials(awsCredentialsFile.getProperty("accessKey"),
+			awsCredentialsFile.getProperty("secretKey"));
 
+	/*static AmazonDynamoDBClient client = new AmazonDynamoDBClient(awsCreds);
+	static DynamoDB dynamoDB = new DynamoDB(client);
+	*/
+	static AmazonDynamoDBClient client = new AmazonDynamoDBClient();
+	static DynamoDB dynamoDB = new DynamoDB(getclient(client));
 
-	static AmazonDynamoDBClient client = new AmazonDynamoDBClient(awsCreds);
+	public static AmazonDynamoDBClient getclient(AmazonDynamoDBClient client) {
+		client.withEndpoint("http://localhost:8000");
+		return client;
+	}
 
-	  
-	  //  static DynamoDB dynamoDB = new DynamoDB(new AmazonDynamoDBClient(
-	    //        new ProfileCredentialsProvider()));
-		static DynamoDB dynamoDB = new DynamoDB(client);
+	static String user = "vendor";
+	static String planWedding = "planWeddding";
+	static String confirmedEvents = "confirmEvents";
 
+	public static void main(String[] args) throws IOException {
 
-    static String user = "vendor";
-    static String planWedding= "planWeddding";
-    static String confirmedEvents = "confirmEvents"; 
-    public static void main(String[] args) throws IOException {
+		createItems();
 
-        createItems();
+		//retrieveItem();
 
-     // retrieveItem();
+		// Perform various updates.
+		// updateMultipleAttributes();
+		// updateAddNewAttribute();
+		// updateExistingAttributeConditionally();
 
-        // Perform various updates.
-       // updateMultipleAttributes();
-        //updateAddNewAttribute();
-       // updateExistingAttributeConditionally();
+		// Delete the item.
+		// deleteItem();
 
-        // Delete the item.
-//        deleteItem();
+	}
 
-    }
+	private static void createItems() {
 
-    private static void createItems() {
+		Table table = dynamoDB.getTable(user);
+		Table table2 = dynamoDB.getTable(planWedding);
+		Table table3 = dynamoDB.getTable(confirmedEvents);
 
-        Table table = dynamoDB.getTable(user);
-        Table table2 = dynamoDB.getTable(planWedding);
-        Table table3 = dynamoDB.getTable(confirmedEvents);
-        
-        try {
+		try {
 
-            Item item = new Item()
-                .withPrimaryKey("username", "rambit")
-                .withString("firstName", "Ravi")
-                .withString("lastName", "Daemon")
-                .withMap( "Address", 
-                    new ValueMap()
-                    .withString("street", "86th Street")
-                    .withString("city", "Brooklyn")
-                    .withString("state", "NY")
-                    .withString("zip", "11209"))
-                .withString("phoneNumber", "9008305270");
-                 //table.putItem(item);
+			Item item = new Item().withPrimaryKey("username", "rambit")
+					.withString("firstname", "Matt")
+					.withString("lastname", "Daemon")
+					.withMap("Address",
+							new ValueMap()
+							.withString("street", "86th Street")
+							.withString("city", "Brooklyn")
+							.withString("state", "NY")
+							.withString("zip", "11209"))
+					.withString("phoneNumber", "9008305270")
+					.withDouble("rating", 4.5)
+					.withLong("Price", 19000)
+					.withString("category", "photographer");
+			// table.putItem(item);
 
-         PutItemSpec pit = new PutItemSpec().withItem(item).withConditionExpression("attribute_not_exists(username)");
-         table.putItem(pit);
+			PutItemSpec pit = new PutItemSpec().withItem(item)
+					.withConditionExpression("attribute_not_exists(username)");
+			table.putItem(pit);
 
-     			
-                /*  Date d = new Date();
-                  item = new Item()
-                         .withPrimaryKey("username", "rambit")
-                         .withString("date", d.toString())
-                         .withNumber("budget", 1234)
-                         .withMap( "Address", 
-                             new ValueMap()
-                             .withString("street", "86th Street")
-                             .withString("city", "Brooklyn")
-                             .withString("state", "NY")
-                             .withString("zip", "11209"))
-                         .withString("preferenceOrder", "photographer,florist,makeupArtist");
-                          
-                  table2.putItem(item);
-                  
-                  item = new Item()
-                                  .withPrimaryKey("username", "rambit")
-                                  .withString("date", d.toString())
-                                  .withNumber("price", 1234)
-                                  .withMap( "Address", 
-                                      new ValueMap()
-                                      .withString("street", "86th Street")
-                                      .withString("city", "Brooklyn")
-                                      .withString("state", "NY")
-                                      .withString("zip", "11209"))
-                                  .withString("Vendor", "photographer")
-                                  .withString("Name", "RAVAN");
-                                   table3.putItem(item);
-                */          
-        } catch (Exception e) {
-            System.err.println("Create items failed.");
-            System.err.println(e.getMessage());
+			item = new Item().withPrimaryKey("username", "ram")
+					.withString("firstname", "Ravi")
+					.withString("lastname", "tej")
+					.withMap("Address",
+							new ValueMap()
+							.withString("street", "86th Street")
+							.withString("city", "Brooklyn")
+							.withString("state", "NY")
+							.withString("zip", "11209"))
+					.withString("phoneNumber", "9008305270")
+					.withDouble("rating", 4)
+					.withLong("Price", 18000)
+					.withString("category", "florist");
+			// table.putItem(item);
 
-        }
-    }
+			pit = new PutItemSpec().withItem(item).withConditionExpression("attribute_not_exists(username)");
+			table.putItem(pit);
 
-    private static void retrieveItem() {
-        Table table = dynamoDB.getTable(user);
+			/*
+			 * Date d = new Date(); item = new Item()
+			 * .withPrimaryKey("username", "rambit") .withString("date",
+			 * d.toString()) .withNumber("budget", 1234) .withMap( "Address",
+			 * new ValueMap() .withString("street", "86th Street")
+			 * .withString("city", "Brooklyn") .withString("state", "NY")
+			 * .withString("zip", "11209")) .withString("preferenceOrder",
+			 * "photographer,florist,makeupArtist");
+			 * 
+			 * table2.putItem(item);
+			 * 
+			 * item = new Item() .withPrimaryKey("username", "rambit")
+			 * .withString("date", d.toString()) .withNumber("price", 1234)
+			 * .withMap( "Address", new ValueMap() .withString("street",
+			 * "86th Street") .withString("city", "Brooklyn")
+			 * .withString("state", "NY") .withString("zip", "11209"))
+			 * .withString("Vendor", "photographer") .withString("Name",
+			 * "RAVAN"); table3.putItem(item);
+			 */
+		} catch (Exception e) {
+			System.err.println("Create items failed.");
+			System.err.println(e.getMessage());
 
-        try {
+		}
+	}
 
-            Item item = table.getItem("username", "rambit",  "firstName, lastName, phoneNumber, Address", null);
+	private static void retrieveItem() {
+		Table table = dynamoDB.getTable(user);
 
-            System.out.println("Printing item after retrieving it....");
-            System.out.println(item.toJSONPretty());
+		try {
 
-        } catch (Exception e) {
-            System.err.println("GetItem failed.");
-            System.err.println(e.getMessage());
-        }   
+			Item item = table.getItem("username", "rambit", "firstname, lastname, phoneNumber, Address, rating, Price", null);
 
-    }
+			System.out.println("Printing item after retrieving it....");
+			System.out.println(item.toJSONPretty());
 
-    private static void updateAddNewAttribute() {
-        Table table1 = dynamoDB.getTable("ProductCatalog");
+		} catch (Exception e) {
+			System.err.println("GetItem failed.");
+			System.err.println(e.getMessage());
+		}
 
-        try {
+	}
 
-            Map<String, String> expressionAttributeNames = new HashMap<String, String>();
-            expressionAttributeNames.put("#na", "NewAttribute");
+	private static void updateAddNewAttribute() {
+		Table table1 = dynamoDB.getTable("ProductCatalog");
 
-            UpdateItemSpec updateItemSpec = new UpdateItemSpec()
-            .withPrimaryKey("Id", 121)
-            .withUpdateExpression("set #na = :val1")
-            .withNameMap(new NameMap()
-                .with("#na", "NewAttribute"))
-            .withValueMap(new ValueMap()
-                .withString(":val1", "Some value"))
-            .withReturnValues(ReturnValue.ALL_NEW);
+		try {
 
-            UpdateItemOutcome outcome =  table1.updateItem(updateItemSpec);
+			Map<String, String> expressionAttributeNames = new HashMap<String, String>();
+			expressionAttributeNames.put("#na", "NewAttribute");
 
-            // Check the response.
-            System.out.println("Printing item after adding new attribute...");
-            System.out.println(outcome.getItem().toJSONPretty());           
+			UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey("Id", 121)
+					.withUpdateExpression("set #na = :val1").withNameMap(new NameMap().with("#na", "NewAttribute"))
+					.withValueMap(new ValueMap().withString(":val1", "Some value"))
+					.withReturnValues(ReturnValue.ALL_NEW);
 
-        }   catch (Exception e) {
-            System.err.println("Failed to add new attribute in " + user);
-            System.err.println(e.getMessage());
-        }        
-    }
+			UpdateItemOutcome outcome = table1.updateItem(updateItemSpec);
 
-    private static void updateMultipleAttributes() {
+			// Check the response.
+			System.out.println("Printing item after adding new attribute...");
+			System.out.println(outcome.getItem().toJSONPretty());
 
-        Table table = dynamoDB.getTable(user);
+		} catch (Exception e) {
+			System.err.println("Failed to add new attribute in " + user);
+			System.err.println(e.getMessage());
+		}
+	}
 
-        try {
+	private static void updateMultipleAttributes() {
 
-           UpdateItemSpec updateItemSpec = new UpdateItemSpec()
-            .withPrimaryKey("Id", 120)
-            .withUpdateExpression("add #a :val1 set #na=:val2")
-            .withNameMap(new NameMap()
-                .with("#a", "Authors")
-                .with("#na", "NewAttribute"))
-            .withValueMap(new ValueMap()
-                .withStringSet(":val1", "Author YY", "Author ZZ")
-                .withString(":val2", "someValue"))
-            .withReturnValues(ReturnValue.ALL_NEW);
+		Table table = dynamoDB.getTable(user);
 
-            UpdateItemOutcome outcome = table.updateItem(updateItemSpec);
+		try {
 
-            // Check the response.
-            System.out
-            .println("Printing item after multiple attribute update...");
-            System.out.println(outcome.getItem().toJSONPretty());
+			UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey("Id", 120)
+					.withUpdateExpression("add #a :val1 set #na=:val2")
+					.withNameMap(new NameMap().with("#a", "Authors").with("#na", "NewAttribute"))
+					.withValueMap(new ValueMap().withStringSet(":val1", "Author YY", "Author ZZ").withString(":val2",
+							"someValue"))
+					.withReturnValues(ReturnValue.ALL_NEW);
 
-        } catch (Exception e) {
-            System.err.println("Failed to update multiple attributes in "
-                    + user);
-            System.err.println(e.getMessage());
+			UpdateItemOutcome outcome = table.updateItem(updateItemSpec);
 
-        }
-    }
+			// Check the response.
+			System.out.println("Printing item after multiple attribute update...");
+			System.out.println(outcome.getItem().toJSONPretty());
 
-    private static void updateExistingAttributeConditionally() {
+		} catch (Exception e) {
+			System.err.println("Failed to update multiple attributes in " + user);
+			System.err.println(e.getMessage());
 
-        Table table = dynamoDB.getTable(user);
+		}
+	}
 
-        try {
+	private static void updateExistingAttributeConditionally() {
 
-            // Specify the desired price (25.00) and also the condition (price =
-            // 20.00)
+		Table table = dynamoDB.getTable(user);
 
-            UpdateItemSpec updateItemSpec = new UpdateItemSpec()
-            .withPrimaryKey("Id", 120)
-            .withReturnValues(ReturnValue.ALL_NEW)
-            .withUpdateExpression("set #p = :val1")
-            .withConditionExpression("#p = :val2")
-            .withNameMap(new NameMap()
-                .with("#p", "Price"))
-            .withValueMap(new ValueMap()
-                .withNumber(":val1", 25)
-                .withNumber(":val2", 20));
+		try {
 
-            UpdateItemOutcome outcome = table.updateItem(updateItemSpec);
+			// Specify the desired price (25.00) and also the condition (price =
+			// 20.00)
 
-            // Check the response.
-            System.out
-            .println("Printing item after conditional update to new attribute...");
-            System.out.println(outcome.getItem().toJSONPretty());
+			UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey("Id", 120)
+					.withReturnValues(ReturnValue.ALL_NEW).withUpdateExpression("set #p = :val1")
+					.withConditionExpression("#p = :val2").withNameMap(new NameMap().with("#p", "Price"))
+					.withValueMap(new ValueMap().withNumber(":val1", 25).withNumber(":val2", 20));
 
-        } catch (Exception e) {
-            System.err.println("Error updating item in " + user);
-            System.err.println(e.getMessage());
-        }
-    }
+			UpdateItemOutcome outcome = table.updateItem(updateItemSpec);
 
-    private static void deleteItem() {
+			// Check the response.
+			System.out.println("Printing item after conditional update to new attribute...");
+			System.out.println(outcome.getItem().toJSONPretty());
 
-        Table table = dynamoDB.getTable(user);
+		} catch (Exception e) {
+			System.err.println("Error updating item in " + user);
+			System.err.println(e.getMessage());
+		}
+	}
 
-        try {
+	private static void deleteItem() {
 
-            DeleteItemSpec deleteItemSpec = new DeleteItemSpec()
-            .withPrimaryKey("Id", 120)
-            .withConditionExpression("#ip = :val")
-            .withNameMap(new NameMap()
-                .with("#ip", "InPublication"))
-            .withValueMap(new ValueMap()
-            .withBoolean(":val", false))
-            .withReturnValues(ReturnValue.ALL_OLD);
+		Table table = dynamoDB.getTable(user);
 
-            DeleteItemOutcome outcome = table.deleteItem(deleteItemSpec);
+		try {
 
-            // Check the response.
-            System.out.println("Printing item that was deleted...");
-            System.out.println(outcome.getItem().toJSONPretty());
+			DeleteItemSpec deleteItemSpec = new DeleteItemSpec().withPrimaryKey("Id", 120)
+					.withConditionExpression("#ip = :val").withNameMap(new NameMap().with("#ip", "InPublication"))
+					.withValueMap(new ValueMap().withBoolean(":val", false)).withReturnValues(ReturnValue.ALL_OLD);
 
-        } catch (Exception e) {
-            System.err.println("Error deleting item in " + user);
-            System.err.println(e.getMessage());
-        }
-    }
-} 
+			DeleteItemOutcome outcome = table.deleteItem(deleteItemSpec);
+
+			// Check the response.
+			System.out.println("Printing item that was deleted...");
+			System.out.println(outcome.getItem().toJSONPretty());
+
+		} catch (Exception e) {
+			System.err.println("Error deleting item in " + user);
+			System.err.println(e.getMessage());
+		}
+	}
+}

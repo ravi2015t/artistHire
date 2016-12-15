@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -46,9 +47,11 @@ import com.google.gson.JsonObject;
 import com.models.ImageDetails;
 import com.models.PlanWedding;
 import com.models.RateVendor;
+import com.models.RecommendationResults;
 import com.models.Request;
 import com.models.User;
 import com.models.Vendor;
+import com.tasks.ComputeRecommendation;
 import com.tasks.FetchTweetsTask.Location;
 import com.tasks.SendImagetoSQS;
 
@@ -62,6 +65,7 @@ public class PlannerResource {
 	static String confirmedEvents = "confirmEvents";
 	static String tobeApprovedEventsUser = "approveEventsUser";
 	static String tobeApprovedEventsVendor = "approveEventsVendor";
+	static String marketAvgPrice = "marketPrice";
 
 	private static final Properties awsCredentialsFile = WeddingPlannerExecutor
 			.getPropertiesFile("AwsCredentials.properties");
@@ -280,15 +284,40 @@ public class PlannerResource {
 	// code =0 no preference
 
 	@GET
-	@Path("{budget}/{vendor1}/{vendor2}/{vendor2}/{code}")
+	@Path("/recommend/{budget}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String searchVendors(@PathParam("budget") int budget, @PathParam("vendor1") String vendor1,
-			@PathParam("vendor2") String vendor2, @PathParam("vendor3") String vendor3, @PathParam("code") int code) {
-
-		// 0/1 knapsack based on input. It's straight forward if user chooses
-		// only one vendor.
-
-		return null;
+	public List<RecommendationResults> searchVendors(@PathParam("budget") int budget) {
+		Table table = dynamoDB.getTable("marketAvgPrice");
+		Item item = table.getItem("username", "administrator", "photographer, florist, makeupartist", null);
+		Long pValue = (Long) item.get("photographer");
+		Long fValue = (Long) item.get("florist");
+		Long mValue = (Long) item.get("makeupartist");
+		
+		double pParts = (pValue+fValue+mValue)/pValue;
+		double fParts = (pValue+fValue+mValue)/fValue;
+		double mParts = (pValue+fValue+mValue)/mValue;
+		
+		
+		List<RecommendationResults> photoresults= new ArrayList<RecommendationResults>();
+		List<RecommendationResults> floristresults= new ArrayList<RecommendationResults>();
+		List<RecommendationResults> makeresults= new ArrayList<RecommendationResults>();
+		
+		ComputeRecommendation cr = new ComputeRecommendation();
+		try {
+			photoresults = cr.FindVendorsWithinBudget("photographer", Math.round(pParts*budget));
+			floristresults = cr.FindVendorsWithinBudget("florist", Math.round(fParts*budget));
+			makeresults = cr.FindVendorsWithinBudget("makeupartist", Math.round(mParts*budget));
+			
+		
+		} catch (Exception e) {
+			System.out.println("Exception while getting Recommendation");
+			e.printStackTrace();
+		}
+		
+		photoresults.addAll(floristresults);
+		photoresults.addAll(makeresults);
+			
+		return photoresults;
 
 	}
 
@@ -353,6 +382,7 @@ public class PlannerResource {
 		Gson gson = new Gson();
 
 		Table table = dynamoDB.getTable(vendor);
+		//Table table2 = dynamoDB.getTable(marketAvgPrice);
 
 		try {
 			Vendor ven = gson.fromJson(msg, Vendor.class);
