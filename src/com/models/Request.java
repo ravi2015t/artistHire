@@ -12,19 +12,22 @@ public class Request {
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty("Address")
 	private Address Address;
-	@JsonProperty("user")
-	private String user;
+	
+	
+	@JsonProperty("usr")
+	private String usr;
 	@JsonProperty("vendor")
 	private String vendor;
 	
 	@JsonProperty("date")
-	private Date date;
+	private String date;
 	
 	/**
 	* 
 	* @return
 	* The address
 	*/
+	
 	@JsonProperty("Address")
 	public Address getAddress() {
 	return Address;
@@ -45,9 +48,9 @@ public class Request {
 	* @return
 	* The user
 	*/
-	@JsonProperty("user")
-	public String getUser() {
-	return user;
+	@JsonProperty("usr")
+	public String getUsr() {
+	return usr;
 	}
 
 	/**
@@ -55,9 +58,9 @@ public class Request {
 	* @param user
 	* The user
 	*/
-	@JsonProperty("user")
-	public void setUser(String user) {
-	this.user = user;
+	@JsonProperty("usr")
+	public void setUsr(String usr) {
+	this.usr = usr;
 	}
 
 	/**
@@ -86,7 +89,7 @@ public class Request {
 	* The date
 	*/
 	@JsonProperty("date")
-	public Date getDate() {
+	public String getDate() {
 	return date;
 	}
 
@@ -96,7 +99,7 @@ public class Request {
 	* The date
 	*/
 	@JsonProperty("date")
-	public void setDate(Date date) {
+	public void setDate(String date) {
 	this.date = date;
 	}
 

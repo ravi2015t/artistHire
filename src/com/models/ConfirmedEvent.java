@@ -13,13 +13,14 @@ public class ConfirmedEvent {
 	@JsonProperty("venue")
 	private Address venue;
 	
-	@JsonProperty("username")
-	private String username;
+	
+	@JsonProperty("usr")
+	private String usr;
 	
 	@JsonProperty("category")
 	private String category;
 	@JsonProperty("date")
-	private Date date;
+	private String date;
 	@JsonProperty("artist")
 	private String artist;
 	@JsonProperty("price")
@@ -45,10 +46,33 @@ public class ConfirmedEvent {
 	public void setVenue(Address venue) {
 	this.venue = venue;
 	}
+	
+	@JsonProperty("category")
+	public String getCategory() {
+	return this.getCategory();
+	}
+
 	@JsonProperty("category")
 	public void setCategory(String category) {
 	this.category = category;
 	}
+	
+
+	@JsonProperty("usr")
+	public String getUsr() {
+	return usr;
+	}
+
+	/**
+	* 
+	* @param username
+	* The username
+	*/
+	@JsonProperty("usr")
+	public void setUsr(String usr) {
+	this.usr = usr;
+	}
+	
 
 	/**
 	* 
@@ -56,9 +80,10 @@ public class ConfirmedEvent {
 	* The date
 	*/
 	@JsonProperty("date")
-	public Date getDate() {
-	return date;
+	public String getDate() {
+	return this.date;
 	}
+	
 
 	/**
 	* 
@@ -66,7 +91,7 @@ public class ConfirmedEvent {
 	* The date
 	*/
 	@JsonProperty("date")
-	public void setDate(Date date) {
+	public void setDate(String date) {
 	this.date = date;
 	}
 

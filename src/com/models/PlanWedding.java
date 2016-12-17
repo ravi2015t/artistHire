@@ -17,8 +17,6 @@ public class PlanWedding {
 	private Address Address;
 	@JsonProperty("budget")
 	private Long budget;
-	@JsonProperty("preferenceOrder")
-	private String preferenceOrder;
 	
 	@JsonProperty("date")
 	public Date getDate() {
@@ -75,26 +73,7 @@ public class PlanWedding {
 	this.budget = budget;
 	}
 
-	/**
-	* 
-	* @return
-	* The preferenceOrder
-	*/
-	@JsonProperty("preferenceOrder")
-	public String getPreferenceOrder() {
-	return preferenceOrder;
-	}
-
-	/**
-	* 
-	* @param preferenceOrder
-	* The preferenceOrder
-	*/
-	@JsonProperty("preferenceOrder")
-	public void setPreferenceOrder(String preferenceOrder) {
-	this.preferenceOrder = preferenceOrder;
-	}
-
+	
 
 	}
 

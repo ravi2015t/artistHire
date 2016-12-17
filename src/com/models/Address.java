@@ -1,12 +1,16 @@
 package com.models;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@DynamoDBDocument
 public class Address {
 
+	
 	@JsonProperty("street")
 	private String street;
 	@JsonProperty("city")
@@ -16,6 +20,7 @@ public class Address {
 	@JsonProperty("zip")
 	private int zip;
 
+	@DynamoDBAttribute(attributeName = "street")
 	public String getStreet() {
 		return street;
 	}
@@ -33,6 +38,8 @@ public class Address {
 	 * 
 	 * @return The city
 	 */
+	
+	@DynamoDBAttribute(attributeName = "city")
 	public String getCity() {
 		return city;
 	}
@@ -50,6 +57,7 @@ public class Address {
 	 * 
 	 * @return The state
 	 */
+	@DynamoDBAttribute(attributeName = "state")
 	public String getState() {
 		return state;
 	}
@@ -67,6 +75,7 @@ public class Address {
 	 * 
 	 * @return The zip
 	 */
+	@DynamoDBAttribute(attributeName = "zip")
 	public int getZip() {
 		return zip;
 	}

@@ -23,6 +23,7 @@ import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.ReturnValue;
 import com.daemonservices.WeddingPlannerExecutor;
+import com.models.RateVendor;
 
 public class CrudDynamoDB {
 	private static final Properties awsCredentialsFile = WeddingPlannerExecutor
@@ -41,7 +42,7 @@ public class CrudDynamoDB {
 		return client;
 	}
 
-	static String user = "vendor";
+	static String user = "approveEventsVendor";
 	static String planWedding = "planWeddding";
 	static String confirmedEvents = "confirmEvents";
 
@@ -52,7 +53,7 @@ public class CrudDynamoDB {
 		//retrieveItem();
 
 		// Perform various updates.
-		// updateMultipleAttributes();
+		//updateMultipleAttributes();
 		// updateAddNewAttribute();
 		// updateExistingAttributeConditionally();
 
@@ -136,7 +137,11 @@ public class CrudDynamoDB {
 		Table table = dynamoDB.getTable(user);
 
 		try {
-
+			RateVendor rv = new RateVendor();
+			rv.setUsername("foo@example.com");
+		/*	
+			Item item = table.getItem("username", rv.getUsername(), "rating, nusers", null);
+*/
 			Item item = table.getItem("username", "rambit", "firstname, lastname, phoneNumber, Address, rating, Price", null);
 
 			System.out.println("Printing item after retrieving it....");
@@ -180,7 +185,7 @@ public class CrudDynamoDB {
 
 		try {
 
-			UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey("Id", 120)
+/*			UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey("Id", 120)
 					.withUpdateExpression("add #a :val1 set #na=:val2")
 					.withNameMap(new NameMap().with("#a", "Authors").with("#na", "NewAttribute"))
 					.withValueMap(new ValueMap().withStringSet(":val1", "Author YY", "Author ZZ").withString(":val2",
@@ -188,7 +193,17 @@ public class CrudDynamoDB {
 					.withReturnValues(ReturnValue.ALL_NEW);
 
 			UpdateItemOutcome outcome = table.updateItem(updateItemSpec);
-
+*/
+			double rating = 4.5;
+			int usr =1;
+			
+			UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey("username", "foo@example.com")
+					.withUpdateExpression("set #a=:val1 add #na :val2")
+					
+					.withNameMap(new NameMap().with("#a", "rating").with("#na", "nusers"))
+					.withValueMap(new ValueMap().withNumber(":val1", rating).withNumber(":val2", usr))
+					.withReturnValues(ReturnValue.ALL_NEW);
+			UpdateItemOutcome outcome = table.updateItem(updateItemSpec);
 			// Check the response.
 			System.out.println("Printing item after multiple attribute update...");
 			System.out.println(outcome.getItem().toJSONPretty());

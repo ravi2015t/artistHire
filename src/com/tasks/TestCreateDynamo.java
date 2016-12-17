@@ -29,20 +29,20 @@ public class TestCreateDynamo {
 	static BasicAWSCredentials awsCreds = new BasicAWSCredentials(awsCredentialsFile.getProperty("accessKey"),
 			awsCredentialsFile.getProperty("secretKey"));
 
-	/*static AmazonDynamoDBClient client = new AmazonDynamoDBClient(awsCreds);
+	static AmazonDynamoDBClient client = new AmazonDynamoDBClient(awsCreds);
 	static DynamoDB dynamoDB = new DynamoDB(client);
-	*/
-	static AmazonDynamoDBClient client = new AmazonDynamoDBClient();
+	
+	/*static AmazonDynamoDBClient client = new AmazonDynamoDBClient();
 	static DynamoDB dynamoDB = new DynamoDB(getclient(client));
 
 	public static AmazonDynamoDBClient getclient(AmazonDynamoDBClient client) {
 		client.withEndpoint("http://localhost:8000");
 		return client;
 	}
-
+*/
 	static SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
-	static String productCatalogTableName = "market";
+	static String productCatalogTableName = "approveEvents";
 	static String forumTableName = "Forum";
 	static String threadTableName = "Thread";
 	static String replyTableName = "Reply";

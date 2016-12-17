@@ -138,7 +138,7 @@ public class WeddingPlannerExecutor implements ServletContextListener {
 	// run queue receiver 
 			//run sns receiver
      */
-		//this.exeService.execute(new ReceiveProcessImage());
+		this.exeService.execute(new ReceiveProcessImage());
 	    
 		}
 	

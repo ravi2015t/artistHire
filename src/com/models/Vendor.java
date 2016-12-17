@@ -31,8 +31,8 @@ public class Vendor {
 	@JsonProperty("nusers")
 	private int nusers;
 	
-	@JsonProperty("type")
-	private String type;
+	@JsonProperty("category")
+	private String category;
 	
 	@JsonProperty("firstname")
 	public String getFirstname() {
@@ -44,13 +44,13 @@ public class Vendor {
 	* @param firstname
 	* The firstname
 	*/
-	@JsonProperty("type")
-	public void setType(String type) {
-	this.type = type;
+	@JsonProperty("category")
+	public void setCategory(String category) {
+	this.category = category;
 	}
-	@JsonProperty("type")
-	public String getType() {
-	return type;
+	@JsonProperty("category")
+	public String getCategory() {
+	return category;
 	}
 
 	/**

@@ -26,6 +26,8 @@ public class ReceiveProcessImage implements Runnable{
 	ObjectMapper mapper = new ObjectMapper();
     
     AmazonSQS sqs = getclient(awsCreds);
+    AmazonS3 s3client = new AmazonS3Client(awsCreds);
+	
     String myQueueUrl = awsCredentialsFile.getProperty("myQueueUrl");
    
     
@@ -58,8 +60,7 @@ public class ReceiveProcessImage implements Runnable{
         	ImageDetails imd = mapper.readValue(message.getBody(), ImageDetails.class);
             if(imd!=null)
             {
-            	AmazonS3 s3client = new AmazonS3Client(awsCreds);
-        		String bucketName = "artist-hire";
+            	String bucketName = "artisthire90";
         		
         		/*
         		 * I assume folder is either vendor/profile_pictures/vendor_id/picture.png or vendor/albums/vendor_id/image1.png
@@ -72,11 +73,11 @@ public class ReceiveProcessImage implements Runnable{
           }
         
 		catch (IOException e) {
-			System.out.println("Failed while sending messages");
+			System.out.println("Failed while adding image to S3");
 			e.printStackTrace();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			System.out.println("Failed while sending messages");
+			System.out.println("Failed while adding image to S3");
 			e.printStackTrace();
 			}
         	}
