@@ -14,8 +14,6 @@ import org.elasticsearch.common.settings.Settings.Builder;
 
 import com.tasks.FetchTweetsTask;
 import com.tasks.ReceiveProcessImage;
-import com.tasks.ReceiveQueue;
-//import com.tasks.SNSReceiver;
 
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
@@ -25,16 +23,15 @@ import io.searchbox.indices.mapping.PutMapping;
 
 public class WeddingPlannerExecutor implements ServletContextListener {
 
-	private static final Properties awsCredentialsFile = WeddingPlannerExecutor.
-			loadPropertiesFile("AwsCredentials.properties");
-	private static final Properties twitterConfFile = WeddingPlannerExecutor.
-			loadPropertiesFile("TwitterConfig.properties");
+	private static final Properties awsCredentialsFile = WeddingPlannerExecutor
+			.loadPropertiesFile("AwsCredentials.properties");
+	private static final Properties twitterConfFile = WeddingPlannerExecutor
+			.loadPropertiesFile("TwitterConfig.properties");
 	private static final JestClient esClient = WeddingPlannerExecutor.initializeESClient();
 	private static final int numOfThreads = 6;
-	
+
 	private ExecutorService exeService;
-	
-	
+
 	public WeddingPlannerExecutor() {
 		this.exeService = Executors.newFixedThreadPool(WeddingPlannerExecutor.numOfThreads);
 	}
@@ -42,22 +39,21 @@ public class WeddingPlannerExecutor implements ServletContextListener {
 	public static JestClient getESClient() {
 		return WeddingPlannerExecutor.esClient;
 	}
-	
+
 	public static Properties getPropertiesFile(String name) {
-		if(name.equals("TwitterConfig.properties")) {
+		if (name.equals("TwitterConfig.properties")) {
 			return WeddingPlannerExecutor.twitterConfFile;
-		} else if(name.equals("AwsCredentials.properties")) {
+		} else if (name.equals("AwsCredentials.properties")) {
 			return WeddingPlannerExecutor.awsCredentialsFile;
 		}
-		
+
 		return null;
 	}
 
 	private static Properties loadPropertiesFile(String propFilePath) {
 		Properties prop = new Properties();
 		try {
-		InputStream is = FetchTweetsTask.class.getClassLoader().
-				getResourceAsStream(propFilePath);
+			InputStream is = FetchTweetsTask.class.getClassLoader().getResourceAsStream(propFilePath);
 			prop.load(is);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -66,48 +62,13 @@ public class WeddingPlannerExecutor implements ServletContextListener {
 	}
 
 	private static JestClient initializeESClient() {
-		// Important to make the client as multi-threaded since mulitple threads attempt to write
-		// index to elastic-search
-                System.out.println("Initializing Jest Client!!!");
+		System.out.println("Initializing Jest Client!!!");
 		JestClientFactory factory = new JestClientFactory();
-		 factory.setHttpClientConfig(new HttpClientConfig
-		                        .Builder(awsCredentialsFile.getProperty("es-endPoint"))
-		                        .multiThreaded(true)
-		                        .build());
-                 System.out.println("Intialization done");
-		 return factory.getObject();
+		factory.setHttpClientConfig(new HttpClientConfig.Builder(awsCredentialsFile.getProperty("es-endPoint"))
+				.multiThreaded(true).build());
+		System.out.println("Intialization done");
+		return factory.getObject();
 
-	}
-	
-	private void createESIndex() {
-		try {
-			Builder settingsBuilder = Settings.settingsBuilder();
-			settingsBuilder.put("number_of_shards", 5);
-			settingsBuilder.put("number_of_replicas", 1);
-			WeddingPlannerExecutor.esClient.execute(new CreateIndex.Builder(awsCredentialsFile.getProperty("index-name")).
-					settings(settingsBuilder.build().getAsMap()).build());
-	                System.out.println("Creating Indexxx------");	
-			// Create the mapping/schema for documents
-			PutMapping putMapping = new PutMapping.Builder(
-					awsCredentialsFile.getProperty("index-name"),
-					awsCredentialsFile.getProperty("mapping-name"),
-			        "{ \""+ awsCredentialsFile.getProperty("mapping-name") +"\" : { \"properties\" : "
-			        		+ "{ \"tweet\" : {\"type\" : \"string\","
-			        + " \"store\" : \"true\", \"null_value\" : \"na\", \"index\" : \"analyzed\"},"
-			        + " \"latitude\" : {\"type\" : \"double\","
-			        + " \"store\" : \"true\"},"
-			        + "\"longitude\" : {\"type\" : \"double\","
-			        + " \"store\" : \"true\"},"
-			        + "\"sentiment\" : {\"type\" : \"string\","
-			        + " \"store\" : \"true\"} } } }"
-			).build();
-			
-			esClient.execute(putMapping);
-		System.out.println("After creating index----------------------");	
-		} catch (IOException e) {
-			e.printStackTrace();
-                        System.out.println("Exception while creating index");
-		}
 	}
 
 	@Override
@@ -115,34 +76,15 @@ public class WeddingPlannerExecutor implements ServletContextListener {
 		// Shuts all tasks immediately
 		System.out.println("Shutting Down!!");
 		this.exeService.shutdownNow();
-		
+
 	}
 
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
-		// Create the index first
-		/*this.createESIndex();
-                System.out.println("After creating index--------------");
-		// Get all topics and spawn threads, such that one thread should cover two topics
-		String follow = WeddingPlannerExecutor.twitterConfFile.getProperty("follow");
-		String[] followList = follow.split(",");
-		
-		this.exeService.execute(new FetchTweetsTask("sample-client", followList));
-		int counter = 0;
-		while(counter < followList.length) {
-			this.exeService.execute(new FetchTweetsTask("client-" + counter, followList[counter++],
-					followList[counter++]));
-		}
-	    this.exeService.execute(new ReceiveQueue());
-	    this.exeService.execute(new SNSReceiver());
-	// run queue receiver 
-			//run sns receiver
-     */
 		this.exeService.execute(new ReceiveProcessImage());
-	    
-		}
-	
-	
+
+	}
+
 	public static void main(String[] args) {
 		WeddingPlannerExecutor e = new WeddingPlannerExecutor();
 		e.contextInitialized(null);

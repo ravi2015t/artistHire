@@ -1,5 +1,6 @@
 package com.tasks;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -24,8 +25,8 @@ public class ComputePendingEventsVendor {
 			awsCredentialsFile.getProperty("secretKey"));
 	static int NUM_THREADS = 2;
 	static AmazonDynamoDBClient client = new AmazonDynamoDBClient(awsCreds);
-	static DynamoDB dynamoDB = new DynamoDB(client);
-	DynamoDBMapper mapper = new DynamoDBMapper(client);
+	 DynamoDB dynamoDB = new DynamoDB(client);
+	 DynamoDBMapper mapper = new DynamoDBMapper(client);
 
 	public List<PendingEventsSearch> FindVendorsWithinBudget(String name) throws Exception {
 
@@ -44,5 +45,17 @@ public class ComputePendingEventsVendor {
 		    
 		return scanResult;
 	}
+	
+	/*public static void main (String args[])
+	{
+		Long limit = (long) 25000;
+		List<PendingEventsSearch> photoresults = new ArrayList<PendingEventsSearch>();
+		try {
+			photoresults = FindVendorsWithinBudget("foo@example.com");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}*/
 
 }

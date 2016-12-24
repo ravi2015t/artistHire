@@ -64,7 +64,7 @@ public class PendingEventsSearch {
 
 	@Override
      public String toString() {
-         return "vendor" + this.getVendor() + "user" + this.getUser();            
+         return "vendor" + this.getVendor() + "user" + this.getUser()+ "date" + this.getDate();            
      }
 
 }

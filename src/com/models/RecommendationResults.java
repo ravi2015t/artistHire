@@ -65,7 +65,7 @@ public class RecommendationResults {
 		this.rating = rating;
 	}
 
-	@DynamoDBAttribute(attributeName = "Price")
+	@DynamoDBAttribute(attributeName = "price")
 	public Long getPrice() {
 		return price;
 	}

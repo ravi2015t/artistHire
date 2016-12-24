@@ -49,7 +49,7 @@ public class ConfirmedEvent {
 	
 	@JsonProperty("category")
 	public String getCategory() {
-	return this.getCategory();
+	return this.category;
 	}
 
 	@JsonProperty("category")
