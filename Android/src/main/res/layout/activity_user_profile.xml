@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_user_profile"
+    xmlns:app="http://schemas.android.com/apk/lib/com.parse.anyphone"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context="com.parse.anyphone.UserProfileActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/MyMaterialTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/MyMaterialTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/nobody_m" />
+
+        <LinearLayout
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/userNametextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="5dp"
+                android:text="User Name"
+                android:textSize="@dimen/abc_text_size_medium_material" />
+
+            <TextView
+                android:id="@+id/phoneNumbertextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="15dp"
+                android:text="Phone Number"
+                android:textSize="@dimen/abc_text_size_medium_material" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:weightSum="3"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/confirmedEventbutton"
+            style="?android:textAppearanceSmall"
+            android:layout_width="115dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/colorPrimaryDark"
+            android:text="Confirmed Events"
+            android:textColor="@color/icons"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/ToBeConfirmedEventButton"
+            style="?android:textAppearanceSmall"
+            android:layout_width="115dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/colorPrimaryDark"
+            android:text="Pending Response"
+            android:textColor="@color/icons"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/recommendation_for_you_button"
+            style="?android:textAppearanceSmall"
+            android:layout_width="115dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/colorPrimaryDark"
+            android:textColor="@color/icons"
+            android:text="@string/recommendation_for_you"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</LinearLayout>

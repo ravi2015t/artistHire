@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    style="@style/MyMaterialTheme"
+    android:orientation="vertical" >
+
+
+    <EditText
+        android:id="@+id/budgetText"
+        android:hint="@string/enter_your_budget_in"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textColorHint="@color/LightGrey"
+        android:paddingLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorPrimaryLight"
+        android:textColor="@color/colorPrimaryDark">
+
+        <requestFocus />
+    </EditText>
+
+    <Spinner
+        android:id="@+id/preferenceSpinner"
+        android:hint="@string/enter_your_budget_in"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorPrimaryLight"
+        android:textColor="@color/colorPrimaryDark">
+
+    </Spinner>
+
+    <CalendarView
+        android:id="@+id/calendarView"
+        android:hint="@string/enter_your_budget_in"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorPrimaryLight"
+        android:textColor="@color/colorPrimaryDark">
+
+    </CalendarView>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+
+        <Button
+            android:id="@+id/ok"
+            style="?android:textAppearanceSmall"
+            android:layout_marginTop="15dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimaryDark"
+            android:textColor="@color/icons"
+            android:textStyle="bold"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="OK" />
+
+        <Button
+            android:id="@+id/cancel"
+            style="?android:textAppearanceSmall"
+            android:layout_marginTop="15dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimaryDark"
+            android:textColor="@color/icons"
+            android:textStyle="bold"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Cancel" />
+
+    </LinearLayout>
+</LinearLayout>

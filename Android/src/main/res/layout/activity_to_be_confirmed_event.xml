@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/lib/com.parse.anyphone"
+    android:id="@+id/activity_confirm_event"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.parse.anyphone.PendingEventActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/MyMaterialTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/MyMaterialTheme.PopupOverlay" />
+
+</android.support.design.widget.AppBarLayout>
+
+<!--<ImageView-->
+    <!--android:layout_width="100dp"-->
+    <!--android:layout_height="100dp"-->
+    <!--android:layout_marginStart="25dp"-->
+    <!--android:layout_marginTop="75dp"-->
+    <!--android:id="@+id/imageView"-->
+    <!--android:layout_alignParentStart="true"-->
+    <!--android:src="@drawable/nobody_m"/>-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/nobody_m" />
+
+        <LinearLayout
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/userNametextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="5dp"
+                android:text="User Name"
+                android:textSize="@dimen/abc_text_size_medium_material" />
+
+            <TextView
+                android:id="@+id/phoneNumbertextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="15dp"
+                android:text="Phone Number"
+                android:textSize="@dimen/abc_text_size_medium_material" />
+
+            <TextView
+                android:id="@+id/budgettextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="15dp"
+                android:text="Budget"
+                android:textSize="@dimen/abc_text_size_medium_material" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:id="@+id/listView"/>
+
+
+</LinearLayout>
