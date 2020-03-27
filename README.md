@@ -1,0 +1,5 @@
+# artistHire
+MarriageEventPlanner
+This project provides a platform for its users to hire an artist for an Event. We have restricted the scope to three vendors; photographer, florist and makeupartist. Smart suggestions are provided to the user based on the budget and the availability of the vendor. We used a variant of knapsack algorithm to compute the recommendation to a vendor.	
+Android application with different interfaces for user and vendor is supported. The application makes REST calls to a Tomcat server hosted on AWS EBS. Text information is stored on DynamoDB as a primary data source. Because of the size limit of 256kb per item, we chose S3 to be the data base for images. To support efficient multiple uploads we are passing the images to be processed to a queue from which the images are uploaded to the S3 at the desired location. Multi- threaded search and scan of dynamoDB is implemented to improve the performance. Async tasks are implemented to provide a better user experience on the front end. DynamoDB is preferred to elasticsearch as this application is data intensive. 
+
